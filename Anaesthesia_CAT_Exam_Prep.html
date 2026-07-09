@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Anaesthesia CAT — Exam Prep</title>
+<style>
+:root{
+  --bg:#f5f5f7;
+  --card1:#fffdf0; --card2:#fef9e0;
+  --ok1:#edfaf8; --ok2:#d8f5f0;
+  --bad1:#fdecea; --bad2:#fdd8d8;
+  --flag1:#fff4e0; --flag2:#ffe9c2;
+  --gold:#b8860b;
+  --ink:#2a2a2e; --muted:#7a7a82; --line:#e7e4d2;
+  --neutral:#ededf0;
+  --panel:#ffffff;
+  --danger:#d8453b; --ok:#1ba391;
+}
+[data-theme="dark"]{
+  --bg:#16151b;
+  --card1:#231f2a; --card2:#2a2432;
+  --ok1:#132a27; --ok2:#153b34;
+  --bad1:#301718; --bad2:#3d1a1a;
+  --flag1:#2e2412; --flag2:#3a2c14;
+  --gold:#d9a441;
+  --ink:#eae7f0; --muted:#948fa3; --line:#332e3d;
+  --neutral:#2a2632;
+  --panel:#1e1a24;
+  --danger:#e0655c; --ok:#3fc9b3;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'Syne','Trebuchet MS',system-ui,sans-serif;
+  font-weight:600;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:100px;
+  transition:background .25s,color .25s;
+}
+.mono{font-family:'DM Mono','Courier New',monospace; font-weight:500;}
+header{
+  position:sticky; top:0; z-index:40;
+  background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  padding:10px 14px 0;
+}
+.titlerow{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;}
+.titlerow h1{font-size:15px; margin:0; color:var(--gold); letter-spacing:.5px; display:flex; align-items:center; gap:8px;}
+.titlerow h1 .sub{font-size:10px; color:var(--muted); font-weight:600; letter-spacing:1px; text-transform:uppercase;}
+.qcount{font-size:12px; color:var(--muted); white-space:nowrap;}
+.progress{height:7px; background:var(--neutral); border-radius:6px; overflow:hidden;}
+.progress > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--gold),#dcb24a); transition:width .3s;}
+.tabs{display:flex; gap:6px; overflow-x:auto; padding:10px 0 8px; scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{
+  flex:0 0 auto; border:1px solid var(--line); background:var(--panel);
+  color:var(--muted); border-radius:20px; padding:7px 13px;
+  font-size:12px; cursor:pointer; white-space:nowrap;
+  font-family:'Syne',sans-serif; font-weight:700;
+}
+.tab.active{background:var(--gold); color:#fff; border-color:var(--gold);}
+.toolbar{display:flex; gap:7px; padding:8px 14px 10px; flex-wrap:wrap;}
+.btn{
+  border:1px solid var(--line); background:var(--panel); color:var(--ink);
+  border-radius:10px; padding:8px 12px; font-size:12px; cursor:pointer;
+  font-family:'Syne',sans-serif; font-weight:700;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.btn.gold{background:var(--gold); color:#fff; border-color:var(--gold);}
+.btn.on{background:var(--ok); color:#fff; border-color:var(--ok);}
+.btn.danger{background:var(--danger);color:#fff;border-color:var(--danger);}
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+main{max-width:760px; margin:0 auto; padding:14px;}
+.topmeta{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px;}
+.sectlabel{font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold); font-family:'DM Mono',monospace; font-weight:600;}
+.timerwrap{display:flex; align-items:center; gap:10px;}
+.timer{position:relative; width:50px; height:50px;}
+.timer svg{transform:rotate(-90deg);}
+.timer .track{stroke:var(--neutral);}
+.timer .bar{stroke:var(--gold); stroke-linecap:round; transition:stroke-dashoffset .6s linear, stroke .3s;}
+.timer.low .bar{stroke:var(--danger);}
+.timer .num{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:11px; font-weight:600;}
+.timer.low .num{color:var(--danger);}
+.card{background:linear-gradient(135deg,var(--card1),var(--card2)); border:1px solid var(--line); border-radius:16px; padding:18px 16px; box-shadow:0 4px 18px rgba(0,0,0,.06); position:relative;}
+.qtop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:8px;}
+.qnum{font-family:'DM Mono',monospace; font-size:12px; color:var(--gold); font-weight:600;}
+.flagbtn{background:none;border:none;cursor:pointer;font-size:20px;line-height:1;color:var(--line);padding:0 2px;}
+.flagbtn.flagged{color:var(--gold);}
+.qtext{font-size:16.5px; line-height:1.48; font-weight:700; margin-bottom:16px;}
+.opts{display:flex; flex-direction:column; gap:10px;}
+.opt{display:flex; align-items:flex-start; gap:12px; background:var(--panel); border:1.5px solid var(--line); border-radius:12px; padding:13px 14px; cursor:pointer; transition:all .18s; font-weight:600; font-size:14.5px; line-height:1.35;}
+.opt:active{transform:scale(.99);}
+.opt .lett{flex:0 0 auto; width:26px; height:26px; border-radius:7px; background:var(--neutral); color:var(--ink); display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:13px; font-weight:600;}
+.opt.selected{border-color:var(--gold); background:linear-gradient(135deg,var(--flag1),var(--flag2));}
+.opt.selected .lett{background:var(--gold); color:#fff;}
+.opt.correct{background:linear-gradient(135deg,var(--ok1),var(--ok2)); border-color:var(--ok);}
+.opt.correct .lett{background:var(--ok); color:#fff;}
+.opt.wrong{background:linear-gradient(135deg,var(--bad1),var(--bad2)); border-color:var(--danger);}
+.opt.wrong .lett{background:var(--danger); color:#fff;}
+.opt.faded{opacity:.5;}
+.opt.locked{cursor:default;}
+.explain{margin-top:14px; border-left:3px solid var(--gold); background:color-mix(in srgb, var(--gold) 8%, transparent); border-radius:0 10px 10px 0; padding:12px 14px; font-size:13px; line-height:1.55; font-weight:600; display:none;}
+.explain.show{display:block;}
+.explain b{color:var(--gold);}
+.examnote{margin-top:12px; font-size:12px; color:var(--muted); font-style:italic;}
+.nav{display:flex; justify-content:space-between; gap:10px; margin-top:16px;}
+.nav .btn{flex:1; padding:13px; font-size:13.5px; justify-content:center;}
+.statbar{position:fixed; left:0; right:0; bottom:0; z-index:50; background:var(--panel); border-top:1px solid var(--line); display:flex; justify-content:space-around; align-items:center; padding:8px 4px; box-shadow:0 -3px 14px rgba(0,0,0,.08);}
+.stat{text-align:center; flex:1;}
+.stat .k{font-family:'DM Mono',monospace; font-size:17px; font-weight:600;}
+.stat .l{font-size:9px; letter-spacing:.6px; text-transform:uppercase; color:var(--muted);}
+.stat.total .k{color:var(--gold);}
+.stat.ok .k{color:var(--ok);}
+.stat.bad .k{color:var(--danger);}
+.stat.un .k{color:var(--muted);}
+.stat.flag .k{color:var(--gold);}
+.results{display:none;}
+.results.show{display:block;}
+.scorebig{background:linear-gradient(135deg,var(--card1),var(--card2)); border:1px solid var(--line); border-radius:18px; padding:26px 18px; text-align:center; margin-bottom:14px;}
+.scorebig .pct{font-family:'DM Mono',monospace; font-size:52px; color:var(--gold); font-weight:600; line-height:1;}
+.scorebig .frac{font-size:17px; margin-top:6px;}
+.scorebig .sub{color:var(--muted); font-size:12.5px; margin-top:6px;}
+.sectionhead{font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:18px 4px 8px;}
+.breakdown{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:4px 14px; margin-bottom:14px;}
+.brow{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line); gap:10px;}
+.brow:last-child{border-bottom:none;}
+.brow .nm{font-size:13px; font-weight:700;}
+.brow .vl{font-family:'DM Mono',monospace; font-size:13px; color:var(--gold); font-weight:600; white-space:nowrap;}
+.bmini{height:6px; background:var(--neutral); border-radius:5px; overflow:hidden; margin-top:5px; width:120px;}
+.bmini > i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),#dcb24a);}
+.rbtns{display:flex; flex-direction:column; gap:10px; margin-bottom:8px;}
+.rbtns .btn{padding:14px; font-size:14px; justify-content:center;}
+.empty{text-align:center; color:var(--muted); padding:50px 20px; font-size:15px;}
+.reviewlist{display:flex;flex-direction:column;gap:8px;}
+.rcard{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 14px; cursor:pointer;}
+.rcard .rc-top{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted);margin-bottom:5px;font-family:'DM Mono',monospace;}
+.rcard .rc-q{font-size:13.5px;font-weight:700;line-height:1.4;}
+.rcard.wrong{border-left:4px solid var(--danger);}
+.jumpgrid{display:grid; grid-template-columns:repeat(8,1fr); gap:6px; padding:6px 2px 4px;}
+.jbtn{aspect-ratio:1; border-radius:8px; border:1.5px solid var(--line); background:var(--panel); color:var(--ink); font-family:'DM Mono',monospace; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative;}
+.jbtn.current{border-color:var(--gold); border-width:2px;}
+.jbtn.answered-ok{background:var(--ok1); border-color:var(--ok); color:var(--ok);}
+.jbtn.answered-bad{background:var(--bad1); border-color:var(--danger); color:var(--danger);}
+.jbtn.answered-sel{background:var(--flag1); border-color:var(--gold); color:var(--gold);}
+.jbtn .fdot{position:absolute; top:-3px; right:-3px; width:8px;height:8px;border-radius:50%;background:var(--gold);}
+.jumpwrap{margin-bottom:14px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--bg);border-radius:18px 18px 0 0;padding:16px 16px 22px;max-width:760px;width:100%;max-height:75vh;overflow-y:auto;}
+.modal h3{margin:2px 0 12px;font-size:14px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;}
+.modalclose{position:sticky;top:0;text-align:right;}
+.setrow{display:flex;align-items:center;justify-content:space-between;padding:12px 4px;border-bottom:1px solid var(--line);}
+.setrow:last-child{border-bottom:none;}
+.setrow .lbl{font-size:13px;font-weight:700;}
+.setrow .desc{font-size:11px;color:var(--muted);font-weight:500;margin-top:2px;}
+.switch{position:relative;width:44px;height:24px;background:var(--neutral);border-radius:14px;cursor:pointer;border:1px solid var(--line);flex:0 0 auto;}
+.switch.on{background:var(--gold);border-color:var(--gold);}
+.switch i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .18s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.switch.on i{left:22px;}
+@media(min-width:640px){.qtext{font-size:18px;} .jumpgrid{grid-template-columns:repeat(10,1fr);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titlerow">
+    <h1>ANAESTHESIA CAT <span class="sub">Exam Prep</span></h1>
+    <span class="qcount mono" id="qcount">Q 1 / 30</span>
+  </div>
+  <div class="progress"><i id="progbar"></i></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="toolbar">
+    <button class="btn" id="jumpBtn">▤ Jump</button>
+    <button class="btn" id="settingsBtn">⚙ Settings</button>
+    <button class="btn" id="flagOnlyBtn">⚑ Flagged</button>
+    <button class="btn gold" id="resultsBtn">▣ Submit / Results</button>
+    <button class="btn" id="newPaperBtn">⤮ Generate New Paper</button>
+  </div>
+</header>
+
+<main>
+  <div id="quizView">
+    <div class="topmeta">
+      <span class="sectlabel" id="sectLabel">SECTION</span>
+      <div class="timerwrap">
+        <span class="qcount mono" id="examTimerNum" style="display:none;"></span>
+        <div class="timer" id="timer" style="display:none;">
+          <svg width="50" height="50" viewBox="0 0 50 50">
+            <circle class="track" cx="25" cy="25" r="21" fill="none" stroke-width="5"></circle>
+            <circle class="bar" id="timerBar" cx="25" cy="25" r="21" fill="none" stroke-width="5"></circle>
+          </svg>
+          <div class="num mono" id="timerNum">45</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="card">
+      <div class="qtop">
+        <div class="qnum mono" id="qnum"></div>
+        <button class="flagbtn" id="flagBtn" title="Mark for review">☆</button>
+      </div>
+      <div class="qtext" id="qtext"></div>
+      <div class="opts" id="opts"></div>
+      <div class="explain" id="explain"></div>
+      <div class="examnote" id="examnote" style="display:none;">Exam Mode: answers are hidden until you submit the paper.</div>
+    </div>
+    <div class="nav" id="nav">
+      <button class="btn" id="prevBtn">← Previous</button>
+      <button class="btn gold" id="nextBtn">Next →</button>
+    </div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="scorebig">
+      <div class="pct mono" id="rPct">0%</div>
+      <div class="frac" id="rFrac">0 / 0</div>
+      <div class="sub" id="rSub"></div>
+    </div>
+    <div class="sectionhead">Topic Performance</div>
+    <div class="breakdown" id="rBreak"></div>
+    <div class="rbtns">
+      <button class="btn gold" id="rRetryWeak">↻ Retry Incorrect / Weak Questions</button>
+      <button class="btn" id="rReview">◂ Back to Review</button>
+      <button class="btn" id="newPaperBtn2">⤮ Generate New Paper</button>
+      <button class="btn danger" id="rReset">⟳ Reset Everything</button>
+    </div>
+    <div class="sectionhead">Incorrect / Unanswered Questions</div>
+    <div class="reviewlist" id="rIncorrect"></div>
+  </div>
+</main>
+
+<div class="statbar">
+  <div class="stat total"><div class="k mono" id="sTotal">0</div><div class="l">Total</div></div>
+  <div class="stat ok"><div class="k mono" id="sOk">0</div><div class="l">Correct</div></div>
+  <div class="stat bad"><div class="k mono" id="sBad">0</div><div class="l">Wrong</div></div>
+  <div class="stat un"><div class="k mono" id="sUn">0</div><div class="l">Left</div></div>
+  <div class="stat flag"><div class="k mono" id="sFlag">0</div><div class="l">Flagged</div></div>
+</div>
+
+<div class="modal-overlay" id="jumpModal">
+  <div class="modal">
+    <div class="modalclose"><button class="btn" id="jumpCloseBtn">Close ✕</button></div>
+    <h3>Jump to Question</h3>
+    <div class="jumpgrid" id="jumpGrid"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modalclose"><button class="btn" id="settingsCloseBtn">Close ✕</button></div>
+    <h3>Settings</h3>
+    <div class="setrow">
+      <div><div class="lbl">Exam Mode</div><div class="desc">Hide answers/explanations until the whole paper is submitted</div></div>
+      <div class="switch" id="examModeSwitch"><i></i></div>
+    </div>
+    <div class="setrow">
+      <div><div class="lbl">Immediate Feedback</div><div class="desc">Reveal correct answer &amp; explanation as soon as you choose (Practice Mode only)</div></div>
+      <div class="switch on" id="feedbackSwitch"><i></i></div>
+    </div>
+    <div class="setrow">
+      <div><div class="lbl">Per-Question Timer</div><div class="desc">45-second countdown per question, auto-advances on timeout</div></div>
+      <div class="switch" id="timerSwitch"><i></i></div>
+    </div>
+    <div class="setrow">
+      <div><div class="lbl">Dark Mode</div><div class="desc">Switch to a low-light colour theme</div></div>
+      <div class="switch" id="darkSwitch"><i></i></div>
+    </div>
+    <div class="setrow">
+      <div><div class="lbl">Paper Size</div><div class="desc">Number of questions in a generated paper</div></div>
+      <select id="paperSizeSel" style="border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel);color:var(--ink);font-family:'DM Mono',monospace;font-weight:600;">
+        <option value="20">20</option>
+        <option value="30" selected>30</option>
+        <option value="45">45</option>
+        <option value="61">All (61)</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOPICS = ["Outpatient & Dental Chair Anaesthesia","Recovery Room & PACU","Resuscitation & BLS","Pharmacology","Pre-operative Assessment","Monitoring","Complications & Emergencies"];
+
+const QUESTIONS = [
+
+/* ===================== A. OUTPATIENT & DENTAL CHAIR ANAESTHESIA (9) ===================== */
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"Which of the following patients is LEAST suitable for general anaesthesia in the dental chair as an outpatient?",
+o:["ASA I patient for simple extraction","ASA II well-controlled asthmatic","ASA III patient with poorly controlled ischaemic heart disease","Anxious ASA I patient with a needle phobia","ASA I patient with a mild upper respiratory tract infection two weeks ago, now resolved"],
+a:2,
+e:"<b>Correct: C.</b> Outpatient dental chair anaesthesia is reserved for ASA I and well-optimised ASA II patients having short, minimally stimulating procedures with rapid recovery and no resident anaesthetic support overnight. An ASA III patient with poorly controlled ischaemic heart disease carries a significant risk of perioperative cardiac events and needs a hospital setting with full monitoring and immediate escalation capability, not an outpatient dental suite.<br><br><b>Why the others are acceptable:</b> A (ASA I) and B (well-controlled ASA II asthmatic) are textbook-appropriate candidates. D (anxious ASA I) is a common and appropriate indication for GA in the dental chair when local anaesthesia alone is not tolerated. E is fine once the URTI has fully resolved for two weeks, as airway reactivity from a recent URTI typically settles by then.<br><br>💡 <b>Tip:</b> The dental chair environment lacks ICU-level monitoring and rescue capacity — think 'low physiological reserve, short controllable procedure' as the safety filter.",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"All of the following are essential requirements before giving general anaesthesia to an outpatient in the dental chair EXCEPT:",
+o:["A reliable source of oxygen with a self-inflating bag","A laryngoscope and a selection of airway adjuncts","An end-tidal carbon dioxide monitor","A functioning suction apparatus","An operating microscope"],
+a:4,
+e:"<b>Correct: E.</b> An operating microscope has no role in dental chair anaesthesia; it is used in ENT/ophthalmic/neurosurgical procedures requiring fine visualisation, not in administering or monitoring anaesthesia.<br><br><b>Why the others are essential:</b> Oxygen and a self-inflating bag (A) allow immediate manual ventilation. A laryngoscope and airway adjuncts (B) are needed to secure the airway if obstruction or laryngospasm occurs. Capnography (C) is now a mandatory standard of monitoring under any general anaesthetic, including dental chair GA, to confirm ventilation and detect apnoea early. Suction (D) is critical because the shared airway with the dental surgeon and presence of blood/debris/water spray create a high aspiration risk.<br><br>💡 <b>Tip:</b> Minimum monitoring standards (oxygen, airway equipment, suction, capnography, pulse oximetry) apply in EVERY location anaesthesia is given, not just the main theatre.",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"Which of the following is NOT a suitable induction agent for outpatient anaesthesia for dental procedures?",
+o:["Propofol","Sevoflurane (inhalational induction)","Thiopentone","Ketamine as sole agent for a routine simple extraction","Midazolam as sole sedative for a cooperative anxious patient"],
+a:3,
+e:"<b>Correct: D.</b> Ketamine as the sole induction agent for a routine simple extraction is inappropriate — it produces prolonged emergence, dissociative phenomena, hypersalivation (a particular hazard when the airway is being shared with dental instrumentation and water spray), and delays discharge, none of which suit a short outpatient procedure.<br><br><b>Why the others are suitable:</b> Propofol (A) is the outpatient agent of choice due to rapid, clear-headed recovery and antiemetic properties. Sevoflurane (B) is commonly used for inhalational induction, especially in children or needle-phobic patients. Thiopentone (C) remains an acceptable rapid induction agent, though propofol is generally preferred for its smoother recovery profile. Midazolam (E) alone, as a light sedative rather than a general anaesthetic, is appropriate for a cooperative anxious patient having local anaesthesia with sedation.<br><br>💡 <b>Tip:</b> For outpatient anaesthesia the guiding principle is 'fast on, fast off, clear head' — any agent with prolonged or unpredictable emergence is a poor day-case choice.",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"A patient who has undergone general anaesthesia for dental extractions in an outpatient setting is fit for discharge home when they:",
+o:["Are stable, orientated, ambulant, tolerating oral fluids, with a responsible escort and no active bleeding","Have a Glasgow Coma Score of 15 but are still nauseated and unable to sit unaided","Have normal vital signs but have not yet passed urine","Are drowsy but rousable to voice, with a companion to drive them","Have controlled bleeding but no one to accompany them home"],
+a:0,
+e:"<b>Correct: A.</b> Standard discharge criteria after ambulatory anaesthesia require the patient to be fully orientated, haemodynamically stable, able to walk unaided, tolerating oral fluids, with adequately controlled pain and bleeding, and — critically — with a responsible adult to escort them home and supervise them for the following 24 hours.<br><br><b>Why the others fail:</b> B fails because persistent nausea and inability to sit unaided indicate the patient has not yet met functional recovery criteria. C is not itself a barrier (routine voiding is no longer considered mandatory for minor day-case procedures), but is listed as an incomplete criterion set on its own. D fails the fundamental safety principle that the patient — not just the escort — must be sufficiently alert; a drowsy patient cannot be discharged regardless of who accompanies them, and 'driving them' is also inappropriate since patients should never drive themselves or be the responsible decision-maker post-GA. E fails because a responsible escort is mandatory, irrespective of bleeding control.<br><br>💡 <b>Tip:</b> Remember the discharge checklist as an acronym: Stable vitals, Orientated, Ambulant, Pain/bleeding controlled, Escort present (SOAP-E).",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"Regarding local anaesthetic infiltration as an adjunct during dental chair general anaesthesia, which statement is TRUE?",
+o:["It has no effect on intraoperative anaesthetic requirement","It reduces the required depth of general anaesthesia and provides post-operative analgesia","It should always be avoided when general anaesthesia is used","It is only indicated for procedures lasting longer than one hour","It replaces the need for airway protection during the procedure"],
+a:1,
+e:"<b>Correct: B.</b> Local anaesthetic infiltration blunts the surgical stimulus, reducing the depth of general anaesthesia required intraoperatively (allowing lighter, more haemodynamically stable anaesthesia) and provides analgesia into the post-operative period, smoothing emergence and reducing analgesic requirements.<br><br><b>Why the others are wrong:</b> A is false — infiltration clearly reduces anaesthetic requirement via blunted nociceptive input. C is false; combining LA with GA is standard, evidence-based practice for dental surgery. D is false — the benefit applies even to brief procedures such as single extractions. E is false and dangerous; LA infiltration does not protect the airway from blood, debris, or aspiration, and standard airway protection measures (positioning, suction, throat pack where indicated) remain essential.<br><br>💡 <b>Tip:</b> Combining regional/local techniques with GA (multimodal anaesthesia) is a recurring exam theme — it reduces required GA depth, systemic opioid use, and improves recovery quality.",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"Which of the following is a contraindication to performing general anaesthesia for dental treatment in an outpatient (non-hospital) dental setting?",
+o:["Mild well-controlled asthma","A cooperative 8-year-old for multiple carious extractions","Severe untreated obstructive sleep apnoea","A healthy adult requiring removal of a single erupted tooth","Mild iron-deficiency anaemia, haemoglobin 11 g/dL"],
+a:2,
+e:"<b>Correct: C.</b> Severe untreated obstructive sleep apnoea carries a high risk of airway obstruction, exaggerated sensitivity to sedatives/opioids, and post-operative respiratory depression — this patient needs a hospital environment with extended monitoring, not an outpatient dental clinic with early discharge.<br><br><b>Why the others are acceptable:</b> A, B, D, and E all describe patients within the ASA I–II range having straightforward procedures, which are the appropriate population for outpatient dental GA. Mild anaemia (E) and mild controlled asthma (A) do not, by themselves, preclude short outpatient GA.<br><br>💡 <b>Tip:</b> OSA severity — not the diagnosis alone — determines suitability; mild/well-treated OSA may still be considered case-by-case, but severe/untreated disease is an outpatient contraindication.",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"During dental chair anaesthesia with a shared airway, which airway management approach is generally preferred for short procedures in a spontaneously breathing patient?",
+o:["Awake fibreoptic intubation","A nasal or reinforced laryngeal mask airway with careful pharyngeal packing where appropriate","Cricothyroidotomy as first-line airway","No airway device at all, relying on head positioning only","A double-lumen endobronchial tube"],
+a:1,
+e:"<b>Correct: B.</b> A nasal mask, nasal RAE tube, or reinforced/flexible LMA is typically used to keep the surgical field clear for the dentist while maintaining a controlled airway; a throat pack may be used to reduce debris/blood tracking into the pharynx, with careful documentation and removal confirmed before emergence.<br><br><b>Why the others are wrong:</b> Awake fibreoptic intubation (A) is reserved for anticipated difficult airways, not routine dental cases. Cricothyroidotomy (C) is an emergency rescue technique for 'can't intubate, can't oxygenate' situations, never a first-line plan. Relying on positioning alone (D) leaves the airway unprotected from blood, debris and water spray. A double-lumen tube (E) is used for one-lung ventilation in thoracic surgery and has no role in dental anaesthesia.<br><br>💡 <b>Tip:</b> The dental chair is a classic 'shared airway' scenario — the exam expects you to know that airway choice must balance surgical access with airway protection.",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"Which piece of emergency equipment is considered mandatory in any facility offering dental chair general anaesthesia, in addition to standard airway and monitoring equipment?",
+o:["A defibrillator and a stocked resuscitation/emergency drug trolley","A CT scanner","An ultrasound machine for regional blocks","A blood gas analyser","An arterial line trolley"],
+a:0,
+e:"<b>Correct: A.</b> Any location where general anaesthesia is administered — including an outpatient dental facility — must have immediate access to a defibrillator and a fully stocked resuscitation trolley (emergency drugs, airway rescue equipment) because life-threatening emergencies such as anaphylaxis, laryngospasm, or cardiac arrest can occur even during 'minor' procedures.<br><br><b>Why the others are wrong:</b> A CT scanner (B), ultrasound for regional blocks (C), blood gas analyser (D), and arterial line trolley (E) are useful in specific hospital contexts but are not baseline mandatory requirements for a dental chair anaesthesia setting; they exceed what routine outpatient dental anaesthesia requires.<br><br>💡 <b>Tip:</b> This is a recurring 'safety-net' theme in past papers — no matter how minor the procedure, resuscitation capability must always be immediately available wherever GA is given.",
+tip:""},
+
+{t:"Outpatient & Dental Chair Anaesthesia",
+q:"A 6-year-old child with Down's syndrome is scheduled for dental extractions under outpatient general anaesthesia. Which feature specifically increases anaesthetic risk in this population and warrants extra caution?",
+o:["Increased incidence of atlanto-axial instability and potential for difficult airway due to macroglossia and midface hypoplasia","Increased risk of malignant hyperthermia specific to Down's syndrome","Down's syndrome patients metabolise local anaesthetics abnormally fast","Down's syndrome is an absolute contraindication to any outpatient GA","Down's syndrome patients require no additional precautions compared to the general population"],
+a:0,
+e:"<b>Correct: A.</b> Children with Down's syndrome have a higher incidence of atlanto-axial instability (caution with neck extension/positioning), macroglossia, midface hypoplasia and a relatively large tongue, all of which can make bag-mask ventilation and intubation more difficult, alongside a higher incidence of congenital cardiac disease requiring pre-operative screening.<br><br><b>Why the others are wrong:</b> There is no specific association between Down's syndrome and malignant hyperthermia (B) or altered local anaesthetic metabolism (C). Down's syndrome is not an absolute contraindication (D) to outpatient GA — many children are managed safely as outpatients once assessed — but it does mandate careful airway and cardiac assessment, so 'no additional precautions' (E) is also incorrect.<br><br>💡 <b>Tip:</b> Down's syndrome is a classic 'anticipate the difficult airway and screen the heart' exam vignette.",
+tip:""},
+
+/* ===================== B. RECOVERY ROOM & PACU (12) ===================== */
+{t:"Recovery Room & PACU",
+q:"Standard monitoring in the recovery room following anaesthesia for routine dental extractions includes all of the following EXCEPT:",
+o:["Pulse oximetry","Non-invasive blood pressure","Level of consciousness assessment","Respiratory rate","Invasive arterial blood pressure monitoring"],
+a:4,
+e:"<b>Correct: E.</b> Invasive arterial cannulation is reserved for major surgery, haemodynamically unstable patients, or those needing frequent blood gas sampling — it is not part of routine post-dental-extraction recovery monitoring.<br><br><b>Why the others are standard:</b> Pulse oximetry (A), non-invasive blood pressure (B), level of consciousness (C), and respiratory rate (D) form the core minimum recovery room monitoring set for every patient recovering from general anaesthesia, regardless of how minor the surgery.<br><br>💡 <b>Tip:</b> Distinguish 'routine minimum monitoring' (non-invasive, applies to everyone) from 'escalated monitoring' (invasive, reserved for higher-risk cases) — a frequently tested distinction.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"A patient in the recovery room is sweating, tachycardic and restless 20 minutes after a routine general anaesthetic. The differential diagnosis should include all of the following EXCEPT:",
+o:["Pain","Hypoxia","Hypercarbia","Hypoglycaemia","Complete recovery of full consciousness with no complication"],
+a:4,
+e:"<b>Correct: E.</b> Sweating, tachycardia and restlessness are abnormal recovery room findings and should never simply be attributed to 'normal recovery' — they demand a systematic search for a treatable cause.<br><br><b>Why the others are correct differentials:</b> Pain (A) is one of the commonest causes of restlessness in recovery. Hypoxia (B) and hypercarbia (C) both produce a sympathetic response (tachycardia, sweating, agitation) and must be actively excluded with pulse oximetry/capnography or blood gas. Hypoglycaemia (D), particularly in diabetic or fasted patients, causes autonomic symptoms including sweating and agitation and should be checked with a bedside glucose.<br><br>💡 <b>Tip:</b> The 'sweating and restless in recovery' vignette is a classic prompt to run through the PHOG mnemonic: Pain, Hypoxia, hypercarbia (hypercapnia), hypOglycaemia — always exclude physiological causes before sedating a restless patient.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Which of the following is a recognised cause of post-operative hypoventilation in the recovery room?",
+o:["Residual neuromuscular blockade","Fully reversed neuromuscular blockade with a train-of-four ratio of 1.0","Normal core temperature","Adequate analgesia without opioid excess","A patient who is fully awake and following commands"],
+a:0,
+e:"<b>Correct: A.</b> Residual neuromuscular blockade (incomplete reversal) is one of the most important and preventable causes of post-operative hypoventilation, leading to inadequate tidal volumes, upper airway obstruction, and risk of hypoxia; it should always be actively excluded (clinically or with a nerve stimulator) before extubation and again if hypoventilation occurs in recovery.<br><br><b>Why the others are wrong:</b> A fully reversed block with TOF ratio 1.0 (B) indicates adequate neuromuscular recovery, not a cause of hypoventilation. Normal temperature (C), adequate analgesia without opioid excess (D), and a fully awake, command-following patient (E) are all reassuring findings that argue against hypoventilation, not causes of it.<br><br>💡 <b>Tip:</b> Causes of post-op hypoventilation cluster into three groups: central (residual anaesthetic/opioid), muscular (residual NMB), and mechanical (airway obstruction, bronchospasm, pneumothorax) — know at least one example from each group.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Which of the following is NOT a recognised sign of upper airway obstruction in the recovery room?",
+o:["Stridor","Paradoxical (see-saw) chest and abdominal movement","Tracheal tug","Bounding, regular pulse with normal saturation on air","Use of accessory muscles of respiration"],
+a:3,
+e:"<b>Correct: D.</b> A bounding, regular pulse with a normal oxygen saturation on room air is a reassuring finding and is inconsistent with significant airway obstruction, which would be expected to cause desaturation and haemodynamic disturbance if uncorrected.<br><br><b>Why the others are signs of obstruction:</b> Stridor (A) is the classic audible sign of upper airway narrowing. Paradoxical/see-saw breathing (B) reflects the increased work of breathing against an obstructed airway. Tracheal tug (C) and accessory muscle use (E) both indicate increased inspiratory effort typical of obstruction.<br><br>💡 <b>Tip:</b> Airway obstruction signs are about increased WORK of breathing (tug, paradox, accessory muscles, stridor) — a calm, normally saturating patient does not fit that picture.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"The most effective measure to reduce the risk of laryngospasm at extubation is to:",
+o:["Extubate the patient while still in a light plane of anaesthesia (stage 2)",
+   "Extubate either deep (in a surgical plane, before airway reflexes return) or fully awake, avoiding extubation in stage 2",
+   "Extubate as soon as the endotracheal tube cuff is deflated, regardless of depth",
+   "Suction the pharynx vigorously immediately before extubation while still deep",
+   "Give a further dose of a short-acting neuromuscular blocker just before extubation"],
+a:1,
+e:"<b>Correct: B.</b> Extubation is safest either 'deep' — while the patient is still in a surgical plane with airway reflexes obtunded — or fully awake with protective reflexes restored. Extubating during stage 2 (the excitatory, semi-conscious 'in-between' stage), when reflexes are hyperactive but consciousness is not yet controlled, is the classic trigger for laryngospasm.<br><br><b>Why the others are wrong:</b> A directly describes the dangerous stage-2 extubation to be avoided. C ignores depth of anaesthesia entirely, which is the key determinant of laryngospasm risk. D — vigorous pharyngeal stimulation while still light/deep can itself precipitate laryngospasm; suctioning should be gentle and, if performed, done either deep or once the patient is more awake. E is inappropriate and dangerous — you would not paralyse a patient you are about to extubate, as this removes their ability to protect their own airway.<br><br>💡 <b>Tip:</b> Remember the rule: 'deep or awake, never in between' for extubation timing.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Important causes of delayed emergence from general anaesthesia include all of the following EXCEPT:",
+o:["Residual effect of anaesthetic/sedative drugs","Hypothermia","Hypoglycaemia","Adequate reversal of neuromuscular blockade with normal train-of-four","Intraoperative hypoxic or ischaemic brain injury"],
+a:3,
+e:"<b>Correct: D.</b> Adequate, confirmed reversal of neuromuscular blockade is a reassuring finding, not a cause of delayed emergence — it rules out residual paralysis (which can mimic delayed emergence by preventing purposeful movement) as the explanation.<br><br><b>Why the others are correct causes:</b> Residual anaesthetic/sedative drug effect (A) is the commonest cause. Hypothermia (B) slows drug metabolism and depresses consciousness. Hypoglycaemia (C) impairs cerebral function and consciousness. Intraoperative hypoxic-ischaemic injury (E), though less common, is an important and serious cause that must be considered if emergence is unexpectedly prolonged despite correcting reversible causes.<br><br>💡 <b>Tip:</b> Structure delayed emergence causes as: residual drug effect, metabolic (glucose, electrolytes, temperature), and neurological (stroke, hypoxic injury) — a useful framework for any 'differential diagnosis' style question.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Which of the following is the SINGLE most important initial step in the differential diagnosis of a hypoxic patient in the recovery room?",
+o:["Immediately sedate the patient to reduce oxygen demand",
+   "Check the airway is patent and increase inspired oxygen while assessing breathing and circulation",
+   "Discharge the patient to the ward for observation",
+   "Wait five minutes to see if saturation improves spontaneously before doing anything",
+   "Give intravenous naloxone to every hypoxic patient regardless of opioid history"],
+a:1,
+e:"<b>Correct: B.</b> The first response to any hypoxic patient is a rapid airway-breathing-circulation assessment: confirm airway patency, increase supplemental oxygen, and assess ventilation and circulation, while simultaneously seeking the underlying cause (obstruction, hypoventilation, atelectasis, aspiration, pulmonary oedema, pneumothorax).<br><br><b>Why the others are wrong:</b> Sedating a hypoxic patient (A) further depresses ventilation and is dangerous. Discharging a hypoxic patient (C) is unsafe and inappropriate. Waiting passively (D) risks deterioration in a time-critical situation. Giving naloxone indiscriminately (E) is inappropriate if there is no history or clinical suspicion of opioid-induced respiratory depression, and can precipitate severe pain and haemodynamic surges if given unnecessarily.<br><br>💡 <b>Tip:</b> Every 'patient deteriorating' vignette in recovery starts the same way: A, B, C, oxygen, call for help — treat first, investigate the specific cause second.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Which factor is a recognised risk factor for post-operative nausea and vomiting (PONV)?",
+o:["Male sex","Non-smoking status","History of motion sickness or previous PONV","Short duration of surgery (under 20 minutes)","Use of regional anaesthesia instead of general anaesthesia"],
+a:2,
+e:"<b>Correct: C.</b> A personal history of motion sickness or previous PONV is one of the strongest and most consistently reproduced patient-related risk factors used in PONV risk scores (such as Apfel's score).<br><br><b>Why the others are wrong:</b> Female sex (not male, A) is a risk factor. Non-smoking status (B) is itself a risk factor (smokers have a LOWER incidence of PONV) — so B is stated the wrong way round as a 'risk'. Longer, not shorter, duration of surgery/anaesthesia (D) increases PONV risk. Regional anaesthesia (E) reduces PONV risk compared with general anaesthesia (particularly compared with volatile-agent-based GA), so it is protective, not causative.<br><br>💡 <b>Tip:</b> Apfel's simplified score: female sex, non-smoker, history of PONV/motion sickness, post-operative opioid use — each adds risk, useful for predicting who needs prophylactic antiemetics.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Shivering in the recovery room following general anaesthesia is most appropriately managed initially by:",
+o:["Immediate re-induction of general anaesthesia","Active warming (forced-air warmer, warmed fluids) and consideration of small-dose intravenous tramadol or pethidine if severe","Ignoring it, as it always resolves without intervention and is never clinically significant","Giving a large bolus of neuromuscular blocking agent to stop the muscle activity","Rapid intravenous infusion of ice-cold fluids"],
+a:1,
+e:"<b>Correct: B.</b> Post-anaesthetic shivering is usually due to intraoperative heat loss (redistribution hypothermia) and/or a direct pharmacological effect of volatile agents; management is active warming, and for significant/distressing shivering, low-dose pethidine (which has a specific anti-shivering effect via kappa-opioid activity) or tramadol can be used.<br><br><b>Why the others are wrong:</b> Re-inducing anaesthesia (A) is a drastic, inappropriate response to a self-limiting recovery phenomenon. Shivering increases oxygen consumption significantly (up to 200–400%) and can precipitate myocardial ischaemia or hypoxaemia in vulnerable patients, so it is NOT insignificant (C) and should be actively treated. Neuromuscular blockade (D) would leave the patient unable to breathe or protect their airway — entirely inappropriate in recovery. Cold fluids (E) would worsen hypothermia and shivering.<br><br>💡 <b>Tip:</b> Pethidine's anti-shivering effect (via kappa receptors) is a favourite exam pearl distinguishing it from other opioids.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Which of the following combinations best represents the modified Aldrete criteria used to assess readiness for discharge from the recovery room to the ward?",
+o:["Activity, respiration, circulation, consciousness, oxygen saturation","Weight, height, allergy status, fasting time, blood group","Surgical duration, blood loss, type of anaesthetic drug used, surgeon's seniority","Patient's insurance status, bed availability, time of day, ward staffing levels","Anaesthetist's personal preference alone with no objective scoring"],
+a:0,
+e:"<b>Correct: A.</b> The modified Aldrete score assesses five domains — activity (movement of limbs), respiration, circulation (blood pressure), consciousness, and oxygen saturation — each scored 0–2, with a total score (commonly ≥9) indicating readiness for transfer out of recovery.<br><br><b>Why the others are wrong:</b> B, C, D, and E list factors that are either irrelevant to physiological readiness for discharge (insurance, bed availability, staffing) or are pre-operative/intraoperative descriptors, not standardised discharge scoring domains, and E incorrectly implies there is no objective tool at all.<br><br>💡 <b>Tip:</b> Aldrete = Activity, Respiration, Circulation, Consciousness, sat(O2) — a frequently examined scoring system.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"A patient develops significant hypotension in the recovery room after an otherwise uneventful spinal anaesthetic for a lower limb procedure. The most likely explanation is:",
+o:["Sympathetic blockade from the residual spinal anaesthetic causing vasodilation","Acute myocardial infarction as the only possible cause","Anaphylaxis to the surgical drapes","Malignant hyperthermia","Hyperthyroid crisis"],
+a:0,
+e:"<b>Correct: A.</b> Spinal anaesthesia blocks sympathetic outflow, producing vasodilation and a fall in systemic vascular resistance (and sometimes bradycardia from blockade of cardiac accelerator fibres if the block is high); this is the most common and expected cause of hypotension in this setting, treated with fluids and vasopressors (e.g. phenylephrine or ephedrine) as needed.<br><br><b>Why the others are wrong:</b> While myocardial infarction (B) should always remain on the differential in a hypotensive patient, it is not the ONLY possible cause and is far less likely than sympathetic blockade in this specific, otherwise uneventful spinal scenario — B's absolute wording ('only possible cause') makes it incorrect. Anaphylaxis to drapes (C) is exceedingly rare and would typically present with additional features (rash, bronchospasm, angioedema). Malignant hyperthermia (D) presents with hypercarbia, tachycardia, muscle rigidity and rising temperature, not isolated hypotension, and is triggered by volatile agents/suxamethonium, not spinal anaesthesia. Hyperthyroid crisis (E) causes tachycardia, hyperthermia and agitation, not hypotension as the leading feature.<br><br>💡 <b>Tip:</b> Always link the anaesthetic technique used to its expected physiological side-effects first before reaching for rare differentials.",
+tip:""},
+
+{t:"Recovery Room & PACU",
+q:"Emergence delirium is most commonly seen in which patient population, and is characteristically triggered by which agent?",
+o:["Elderly patients; triggered specifically by regional anaesthesia","Young children; commonly associated with sevoflurane anaesthesia","Adult males; specifically caused by propofol total intravenous anaesthesia","Only in patients who received no premedication of any kind, regardless of age","Pregnant patients; caused exclusively by epidural analgesia"],
+a:1,
+e:"<b>Correct: B.</b> Emergence delirium (agitation, disorientation, inconsolable crying, thrashing) is most characteristically seen in pre-school and young children and has a recognised association with sevoflurane, likely related to its rapid offset and effects on the CNS during emergence.<br><br><b>Why the others are wrong:</b> Regional anaesthesia (A) is not a recognised specific trigger. Propofol TIVA (C) is, in fact, associated with a LOWER incidence of emergence delirium compared with volatile agents — the opposite of what is stated. Premedication status alone (D) does not exclusively determine risk, and the statement is too absolute. Epidural analgesia (E) is not a recognised cause of emergence delirium.<br><br>💡 <b>Tip:</b> Sevoflurane + young child + agitated, inconsolable emergence = classic 'emergence delirium' vignette.",
+tip:""},
+
+/* ===================== C. RESUSCITATION & BLS (7) ===================== */
+{t:"Resuscitation & BLS",
+q:"In the adult chain of survival, which of the following represents the correct order of the first three links?",
+o:["Early defibrillation → early CPR → early access","Early recognition and call for help → early CPR → early defibrillation","Early advanced life support → early CPR → early recognition","Early defibrillation → early recognition → early advanced care","Early CPR → early advanced care → early recognition"],
+a:1,
+e:"<b>Correct: B.</b> The chain of survival begins with early recognition of the emergency and activation of the emergency response system, followed by early bystander CPR to maintain circulation, followed by early defibrillation to restore an organised rhythm, and finally early advanced life support/post-resuscitation care.<br><br><b>Why the others are wrong:</b> A, C, D, and E all place the links out of sequence — defibrillation or advanced care cannot logically precede recognition and basic CPR, since without early recognition the chain never starts, and without CPR maintaining perfusion, defibrillation has a much lower chance of success.<br><br>💡 <b>Tip:</b> Recognition → CPR → Defibrillation → Advanced care/post-arrest care — the sequence tracks the actual time-course of an arrest response.",
+tip:""},
+
+{t:"Resuscitation & BLS",
+q:"To determine whether an unresponsive victim needs rescue breathing, a rescuer should:",
+o:["Immediately begin chest compressions without any assessment",
+   "Look, listen and feel for breathing for no more than 10 seconds, noting any abnormal (agonal) breathing or cyanosis",
+   "Check only for a carotid pulse and skip assessment of breathing entirely",
+   "Wait for the patient to regain consciousness before assessing breathing",
+   "Assume normal breathing is present if the chest appears still"],
+a:1,
+e:"<b>Correct: B.</b> Current BLS guidance is to briefly (≤10 seconds) look for chest movement, listen for airflow, and feel for breath, while also checking colour for cyanosis/pallor — agonal gasping should be recognised as NOT normal breathing and treated as a cardiac arrest requiring CPR.<br><br><b>Why the others are wrong:</b> Skipping assessment entirely (A) risks starting compressions on a breathing patient or, more dangerously, missing the diagnosis of arrest if done carelessly — current teaching still requires a brief structured check even though it should not be prolonged. Checking pulse alone without breathing assessment (C) is incomplete, and pulse checks by lay rescuers are actually discouraged/de-emphasised due to unreliability. D is dangerous — you cannot wait for spontaneous recovery in a genuine arrest. E is dangerous and wrong — chest stillness with no other assessment is not a reliable determination, and this option describes an inadequate assessment, not a validated technique.<br><br>💡 <b>Tip:</b> 'Look, listen, feel' for no more than 10 seconds, and specifically rule out agonal breathing, which is a common trap — it looks like breathing but is actually a sign of cardiac arrest.",
+tip:""},
+
+{t:"Resuscitation & BLS",
+q:"For adult single-rescuer CPR with an unprotected airway, the recommended compression-to-ventilation ratio is:",
+o:["15:2","30:2","5:1","10:1","Continuous compressions with no ventilation ever"],
+a:1,
+e:"<b>Correct: B.</b> The standard adult single-rescuer ratio (with an unprotected/non-advanced airway) is 30 chest compressions to 2 rescue breaths, aiming for a compression rate of 100–120/min and adequate depth (approximately 5–6 cm).<br><br><b>Why the others are wrong:</b> 15:2 (A) was historically used for two-rescuer paediatric/infant CPR in some protocols, not standard adult single-rescuer CPR. 5:1 and 10:1 (C, D) are not recognised adult BLS ratios. Continuous compressions with no ventilation at all (E) is only appropriate in specific circumstances (e.g. hands-only CPR by an untrained bystander, or once an advanced airway is in place allowing asynchronous ventilation), not as a universal rule.<br><br>💡 <b>Tip:</b> 30:2 for adult single-rescuer BLS — once an advanced airway (ETT/supraglottic device) is placed, compressions become continuous with asynchronous ventilation at 1 breath every 6 seconds.",
+tip:""},
+
+{t:"Resuscitation & BLS",
+q:"Which of the following statements concerning cardiopulmonary resuscitation is TRUE?",
+o:["Placement of an endotracheal tube always guarantees a definitively secure and patent airway",
+   "Head tilt and chin lift can help relieve airway obstruction due to the tongue falling back",
+   "Adrenaline and sodium bicarbonate may be given by the oral route during arrest",
+   "Abdominal bleeding cannot complicate resuscitation efforts",
+   "Wheezing is not a recognised sign of airway obstruction"],
+a:1,
+e:"<b>Correct: B.</b> Head tilt–chin lift is a basic manoeuvre that lifts the tongue away from the posterior pharyngeal wall, relieving the commonest cause of upper airway obstruction in an unconscious patient.<br><br><b>Why the others are wrong:</b> An endotracheal tube reduces but does NOT 'always guarantee' a perfectly secure airway (A) — it can be misplaced, displaced, obstructed by secretions, or kinked, so vigilance is still required (confirm with capnography). Emergency drugs such as adrenaline and sodium bicarbonate must be given intravenously or intraosseously during resuscitation, never orally (C), as oral absorption is far too slow and unreliable in a shock state. Ongoing intra-abdominal bleeding is a well-recognised complicating factor in resuscitation, contributing to refractory hypovolaemic shock (D is false). Wheezing IS a recognised sign of lower/mid-airway obstruction or bronchospasm (E is false).<br><br>💡 <b>Tip:</b> Head tilt–chin lift (or jaw thrust if C-spine injury suspected) is the first manoeuvre taught in every BLS course — know exactly what problem it solves (the tongue occluding the pharynx).",
+tip:""},
+
+{t:"Resuscitation & BLS",
+q:"During advanced life support, which of the following is classified among the reversible causes of cardiac arrest ('4 Hs and 4 Ts')?",
+o:["Hypertension","Hyperglycaemia","Hypovolaemia","Hyperlipidaemia","Hyperventilation"],
+a:2,
+e:"<b>Correct: C.</b> Hypovolaemia is one of the classic '4 Hs' (Hypoxia, Hypovolaemia, Hypo/hyperkalaemia and other metabolic disturbances, Hypothermia) that must be actively considered and treated during resuscitation, alongside the '4 Ts' (Tension pneumothorax, Tamponade cardiac, Toxins, Thrombosis).<br><br><b>Why the others are wrong:</b> Hypertension, hyperglycaemia, hyperlipidaemia and hyperventilation are not part of the standard reversible-causes mnemonic; the metabolic 'H' specifically refers to potassium/metabolic disturbance (hypo- or hyperkalaemia), not glucose or lipid abnormalities.<br><br>💡 <b>Tip:</b> Memorise the 4 Hs and 4 Ts as a pair-check during every arrest: Hypoxia/Hypovolaemia/Hypo-Hyperkalaemia-metabolic/Hypothermia and Tension pneumothorax/Tamponade/Toxins/Thrombosis (coronary or pulmonary).",
+tip:""},
+
+{t:"Resuscitation & BLS",
+q:"In adult advanced life support for a shockable rhythm (VF/pulseless VT), the first dose of adrenaline is given:",
+o:["Before the first shock, always","After the third shock, once chest compressions have resumed","Only if a defibrillator is unavailable","Never, as adrenaline is not used in shockable rhythms","By the oral route as soon as intravenous access fails"],
+a:1,
+e:"<b>Correct: B.</b> In shockable rhythms, adrenaline (1 mg IV/IO) is given after the third shock, once compressions have resumed, and then every 3–5 minutes thereafter; the priority for the first two cycles is early defibrillation and high-quality CPR.<br><br><b>Why the others are wrong:</b> Giving adrenaline before the first shock (A) is the protocol for non-shockable rhythms (PEA/asystole), not shockable ones. Adrenaline is not withheld simply because a defibrillator is present (C), nor is it excluded from shockable-rhythm algorithms altogether (D) — it is a core drug in both pathways, just timed differently. Adrenaline must be given IV/IO, never orally (E), during resuscitation.<br><br>💡 <b>Tip:</b> Shockable rhythm: adrenaline after the 3rd shock. Non-shockable rhythm: adrenaline as soon as IV/IO access is obtained. This timing difference is commonly tested.",
+tip:""},
+
+{t:"Resuscitation & BLS",
+q:"Which statement about defibrillation during adult resuscitation is TRUE?",
+o:["It is indicated for pulseless electrical activity (PEA)","It is indicated for asystole","It is indicated for ventricular fibrillation and pulseless ventricular tachycardia","It should be delayed until after all resuscitation drugs have been given","It should never be combined with ongoing chest compressions before the shock"],
+a:2,
+e:"<b>Correct: C.</b> Defibrillation is specifically indicated for the shockable rhythms — ventricular fibrillation (VF) and pulseless ventricular tachycardia (pVT) — where an organised electrical shock can terminate the chaotic/re-entrant rhythm and allow an organised rhythm to re-establish.<br><br><b>Why the others are wrong:</b> PEA (A) and asystole (B) are non-shockable rhythms; defibrillation will not help and may waste critical time. Defibrillation should be performed as EARLY as possible, not delayed for drugs (D) — early defibrillation is a core link in the chain of survival. Chest compressions should continue right up until the moment of shock delivery to minimise the 'hands-off' interval, and are only paused briefly for rhythm analysis and shock delivery itself, so E is false.<br><br>💡 <b>Tip:</b> Shockable = VF/pVT. Non-shockable = PEA/asystole. Minimising 'hands-off time' around defibrillation is a key modern resuscitation quality metric.",
+tip:""},
+
+/* ===================== D. PHARMACOLOGY (13) ===================== */
+{t:"Pharmacology",
+q:"For volatile (inhalational) anaesthetic agents, potency correlates most directly with:",
+o:["The vapour pressure of the agent at room temperature","The lipid solubility of the agent, as reflected by the minimum alveolar concentration (MAC)","The critical temperature of the agent","The molecular weight of the agent","The colour coding of the vaporiser"],
+a:1,
+e:"<b>Correct: B.</b> Potency of an inhalational agent correlates with its lipid solubility (the Meyer-Overton correlation) — more lipid-soluble agents have a lower MAC (the concentration at which 50% of patients do not move to a standard surgical stimulus), meaning less agent is needed for a given anaesthetic effect, i.e. they are more potent.<br><br><b>Why the others are wrong:</b> Vapour pressure (A) determines how volatile the agent is (how readily it evaporates) and dictates vaporiser design, but is a physical property distinct from potency. Critical temperature (C) relates to the point above which a substance cannot be liquefied by pressure alone — relevant to storage/delivery of gases like nitrous oxide, not to potency. Molecular weight (D) has no consistent relationship with anaesthetic potency. Vaporiser colour coding (E) is a safety/identification feature, not a pharmacological determinant.<br><br>💡 <b>Tip:</b> Potency ∝ lipid solubility ∝ 1/MAC — the more fat-soluble the agent, the lower its MAC and the more potent it is.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Which of the following intravenous induction/anaesthetic agents possesses intrinsic analgesic properties at sub-anaesthetic doses, distinguishing it from most other induction agents?",
+o:["Ketamine","Propofol","Thiopentone","Midazolam","Etomidate"],
+a:0,
+e:"<b>Correct: A.</b> Ketamine is unique among commonly used induction agents in providing genuine analgesia (via NMDA receptor antagonism) even at sub-dissociative/sub-anaesthetic doses, making it useful for procedural sedation, trauma, and analgesia-sparing anaesthetic techniques.<br><br><b>Why the others are wrong:</b> Propofol (B), thiopentone (C), midazolam (D), and etomidate (E) are all hypnotic/sedative agents with no meaningful intrinsic analgesic activity — pain relief with these agents must come from a separate analgesic drug or technique.<br><br>💡 <b>Tip:</b> Ketamine = the induction agent with built-in analgesia (via NMDA blockade); this single fact underlies most ketamine exam questions.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Regarding the chemistry of local anaesthetic agents, which statement is FALSE?",
+o:["They are weak bases","They are, to some extent, lipid soluble","They possess a substituted aromatic (benzene) ring","They contain either an amide or ester linkage","They are all suitable to be given intravenously in any circumstance regardless of agent"],
+a:4,
+e:"<b>Correct: E.</b> Local anaesthetic agents are NOT all suitable for intravenous administration in any circumstance — bupivacaine, in particular, is highly cardiotoxic if given intravascularly and is specifically avoided in intravenous regional anaesthesia (Bier's block) for this reason; lignocaine, by contrast, does have a recognised IV use (e.g. IV regional anaesthesia, antiarrhythmic use) but this is agent-specific, not a blanket property of 'all' local anaesthetics.<br><br><b>Why the others are true:</b> Local anaesthetics are weak BASES (A is a true statement, not the false one being sought) that exist in equilibrium between an ionised and non-ionised form depending on pH and their pKa. They are lipid soluble to a variable degree (B), which determines potency and onset. They possess a substituted aromatic ring (C) linked via an amide or ester bond (D) to an amine group — this basic structure (aromatic ring–linkage–amine) defines the local anaesthetic class and determines whether they are metabolised hepatically (amides) or by plasma cholinesterase (esters).<br><br>💡 <b>Tip:</b> Local anaesthetics are weak BASES, not weak acids — a very commonly tested and commonly confused fact.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Vasodilator properties are a recognised feature of most local anaesthetic agents, with one important exception. Which local anaesthetic is characteristically a vasoCONSTRICTOR rather than a vasodilator?",
+o:["Lignocaine","Bupivacaine","Mepivacaine","Ropivacaine","Cocaine"],
+a:4,
+e:"<b>Correct: E.</b> Cocaine is unique among local anaesthetics in causing vasoconstriction, due to its blockade of noradrenaline reuptake at sympathetic nerve terminals, which is why it is still occasionally used topically in ENT/nasal surgery for its combined local anaesthetic and vasoconstrictor/decongestant effect.<br><br><b>Why the others are wrong:</b> Lignocaine (A), bupivacaine (B), mepivacaine (C), and ropivacaine (D) are all, to varying degrees, vasodilators (mepivacaine and ropivacaine less so than lignocaine and bupivacaine) — this vasodilation shortens their duration of action at the injection site unless combined with an added vasoconstrictor such as adrenaline.<br><br>💡 <b>Tip:</b> Cocaine is the one local anaesthetic exam-writers love to single out as the vasoconstrictor exception to the 'local anaesthetics cause vasodilation' rule.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Which muscle group is characteristically most RESISTANT to the onset of action of non-depolarising neuromuscular blocking agents?",
+o:["Larynx","Diaphragm","Orbicularis oculi","Adductor pollicis","Flexor hallucis"],
+a:1,
+e:"<b>Correct: B.</b> The diaphragm, being a large, highly perfused, centrally-innervated muscle, is relatively resistant to neuromuscular blockade — it is both one of the last muscles to become paralysed and one of the first to recover, which is clinically relevant because diaphragmatic movement can persist (or return) even when peripheral muscles (like the adductor pollicis, used for train-of-four monitoring) remain blocked.<br><br><b>Why the others are wrong:</b> The larynx (A) and orbicularis oculi (C) are relatively sensitive and paralyse early, useful for judging intubating conditions. The adductor pollicis (D) is the standard monitoring site precisely because its blockade closely tracks overall block depth without being unusually resistant or sensitive, making it a reliable proxy. Flexor hallucis (E) is not the classic 'most resistant' muscle referenced in this context.<br><br>💡 <b>Tip:</b> Order of NMB sensitivity (most to least sensitive): eye muscles/larynx > adductor pollicis (monitored) > diaphragm (most resistant) — the diaphragm is both last to go and first to recover.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Which of the following is an inhalational anaesthetic agent?",
+o:["Thiopentone","Sevoflurane","Neostigmine","Mivacurium","Dexmedetomidine"],
+a:1,
+e:"<b>Correct: B.</b> Sevoflurane is a halogenated volatile inhalational anaesthetic agent, delivered via a calibrated vaporiser to maintain general anaesthesia.<br><br><b>Why the others are wrong:</b> Thiopentone (A) is an intravenous barbiturate induction agent. Neostigmine (C) is an anticholinesterase used to reverse non-depolarising neuromuscular blockade. Mivacurium (D) is a short-acting non-depolarising neuromuscular blocking agent, metabolised by plasma cholinesterase. Dexmedetomidine (E) is an intravenous alpha-2 agonist used for sedation/analgesia, not an inhalational agent.<br><br>💡 <b>Tip:</b> Learn to sort drugs into their functional class quickly — this exact 'odd one out' format is a recurring question style: one true member of the class hidden among distractors from other drug classes.",
+tip:""},
+
+{t:"Pharmacology",
+q:"The earliest and most common sign of systemic local anaesthetic toxicity when a large dose of lignocaine is inadvertently infiltrated/absorbed in an awake patient is:",
+o:["Sudden cardiac arrest with no warning symptoms","Perioral/circumoral tingling and numbness, light-headedness and tinnitus","Deafness as the first and only symptom","Hypotension as the sole initial sign, with no CNS symptoms","Immediate loss of consciousness with no preceding symptoms"],
+a:1,
+e:"<b>Correct: B.</b> Early local anaesthetic systemic toxicity (LAST) classically presents with CNS excitatory symptoms first: perioral/tongue tingling or numbness, light-headedness, tinnitus, and a metallic taste, reflecting the high sensitivity of the CNS to rising plasma local anaesthetic levels before progression to more severe convulsions, and eventually cardiovascular collapse at higher levels.<br><br><b>Why the others are wrong:</b> Cardiac arrest with no warning (A) and sudden loss of consciousness with no preceding symptoms (E) describe the severe end-stage of LAST, not the earliest sign, and in most cases (though not always) some warning symptoms do precede this. Isolated deafness as the ONLY symptom (C) is not the recognised pattern. Hypotension with no CNS symptoms at all (D) inverts the usual sequence, where CNS toxicity typically precedes cardiovascular toxicity as plasma levels rise.<br><br>💡 <b>Tip:</b> LAST progression: circumoral tingling/tinnitus/metallic taste → light-headedness/visual disturbance → convulsions → CNS depression → cardiovascular collapse. Perioral tingling is the classic 'first sign' answer.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Suxamethonium (succinylcholine), a depolarising neuromuscular blocker, is associated with which recognised side effect?",
+o:["Hyperkalaemia, particularly dangerous in burns, major trauma, or denervation injury patients",
+   "Guaranteed prevention of malignant hyperthermia in susceptible individuals",
+   "Prolonged action lasting several hours in all patients regardless of genetics",
+   "No effect on serum potassium in any patient population",
+   "Complete absence of muscle fasciculations on administration"],
+a:0,
+e:"<b>Correct: A.</b> Suxamethonium causes a transient rise in serum potassium in normal patients (usually clinically insignificant), but can cause a life-threatening, exaggerated hyperkalaemic response in patients with burns, major trauma, prolonged immobility, denervation injuries, or neuromuscular disease, due to upregulation of extrajunctional acetylcholine receptors.<br><br><b>Why the others are wrong:</b> Suxamethonium is, in fact, one of the recognised TRIGGERS of malignant hyperthermia in susceptible individuals, not a preventer of it (B is the opposite of true). Its action is normally short (3–5 minutes) due to rapid hydrolysis by plasma cholinesterase, EXCEPT in patients with atypical plasma cholinesterase (scoline apnoea), so 'in all patients regardless of genetics' (C) is incorrect as a blanket statement. It does affect serum potassium (D is false), and it characteristically causes visible muscle fasciculations before paralysis (E is false).<br><br>💡 <b>Tip:</b> Suxamethonium's key danger triad to remember: hyperkalaemia (burns/trauma/denervation), malignant hyperthermia trigger, and prolonged block in plasma cholinesterase deficiency.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Neostigmine is used to reverse non-depolarising neuromuscular blockade. Which statement about its use is TRUE?",
+o:["It is given alone, without any anticholinergic, in routine clinical practice","It is typically co-administered with an anticholinergic (atropine or glycopyrrolate) to counteract its muscarinic side effects such as bradycardia and excessive secretions","It has no effect on muscarinic receptors anywhere in the body","It should never be used if any reversal of neuromuscular block is required","It is a depolarising neuromuscular blocking agent"],
+a:1,
+e:"<b>Correct: B.</b> Neostigmine is an anticholinesterase that increases acetylcholine at the neuromuscular junction (reversing non-depolarising block) but also increases acetylcholine at muscarinic receptors systemically, causing bradycardia, salivation, bronchospasm and increased gut motility — an anticholinergic (glycopyrrolate or atropine) is co-administered to block these unwanted muscarinic effects while preserving the desired nicotinic (neuromuscular) effect.<br><br><b>Why the others are wrong:</b> Giving neostigmine alone (A) risks significant bradycardia and other muscarinic side effects, so this is not standard practice. Neostigmine clearly does act on muscarinic receptors (C is false). It IS used specifically for reversal of neuromuscular block (D is the opposite of correct). It is an anticholinesterase reversal agent, not a neuromuscular blocker itself (E is false).<br><br>💡 <b>Tip:</b> Neostigmine + glycopyrrolate/atropine is a classic 'paired drug' exam fact — know WHY they are combined (muscarinic side-effect blockade).",
+tip:""},
+
+{t:"Pharmacology",
+q:"Pain on intravenous injection is a well-recognised problem with which induction agent, commonly reduced by pre-treatment with intravenous lignocaine or injection into a larger vein?",
+o:["Propofol","Ketamine","Midazolam","Sevoflurane (as it is given by inhalation, not IV)","Atropine"],
+a:0,
+e:"<b>Correct: A.</b> Propofol is well known to cause pain on intravenous injection, thought to relate to activation of the vanilloid pain receptor pathway by the free aqueous phase of the drug; this is commonly reduced by giving lignocaine before or mixed with the propofol, or by injecting into a larger, faster-flowing vein.<br><br><b>Why the others are wrong:</b> Ketamine (B) and midazolam (C) are not characteristically associated with significant injection pain in the way propofol is. Sevoflurane (D) is an inhalational agent, not given intravenously, making injection pain irrelevant to it. Atropine (E) is not an induction agent and is not associated with this problem.<br><br>💡 <b>Tip:</b> Propofol injection pain + lignocaine pre-treatment is a very frequently tested practical pharmacology pairing.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Regarding opioid analgesics used in anaesthesia, activation of the mu-opioid receptor characteristically produces which of the following effects?",
+o:["Bronchodilation and increased respiratory rate",
+   "Analgesia, respiratory depression, and reduced gastrointestinal motility",
+   "Increased gastrointestinal motility and diarrhoea as the dominant effect",
+   "Pupillary dilation (mydriasis) as a hallmark sign of opioid effect",
+   "No effect on the cough reflex"],
+a:1,
+e:"<b>Correct: B.</b> Mu-opioid receptor activation produces analgesia (the desired effect), but also predictable dose-related side effects: respiratory depression (reduced responsiveness to CO2), and reduced gastrointestinal motility leading to constipation/ileus.<br><br><b>Why the others are wrong:</b> Opioids do not characteristically cause bronchodilation with increased respiratory rate (A) — respiratory RATE is typically decreased, not increased. Opioids cause DECREASED, not increased, GI motility (C), which is why constipation is such a common side effect. The classic pupillary sign of opioid effect is MIOSIS (constriction), not mydriasis (D). Opioids characteristically SUPPRESS the cough reflex (this is why codeine and similar agents are used as antitussives), so 'no effect on cough' (E) is incorrect.<br><br>💡 <b>Tip:</b> Mu receptor effects mnemonic: Analgesia, Respiratory depression, GI (constipation), miosis, and cough suppression — remember 'pinpoint pupils, slow breathing, constipated' as the classic opioid toxicity triad.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Regarding malignant hyperthermia, which of the following statements is TRUE?",
+o:["It is triggered exclusively by intravenous induction agents such as propofol",
+   "It is a hypermetabolic crisis classically triggered by volatile anaesthetic agents and suxamethonium in genetically susceptible individuals",
+   "Dantrolene has no role in its treatment",
+   "It characteristically presents with hypothermia rather than hyperthermia",
+   "It is completely unrelated to genetics and occurs randomly"],
+a:1,
+e:"<b>Correct: B.</b> Malignant hyperthermia is a life-threatening hypermetabolic state triggered by volatile anaesthetic agents (e.g. sevoflurane, isoflurane) and suxamethonium in individuals with an inherited susceptibility (commonly linked to the ryanodine receptor, RYR1 gene), presenting with rising end-tidal CO2, tachycardia, muscle rigidity, and rapidly rising core temperature.<br><br><b>Why the others are wrong:</b> Propofol and other intravenous agents are NOT recognised MH triggers (A is false) — in fact, TIVA with propofol is the anaesthetic technique of choice in known/suspected MH-susceptible patients. Dantrolene IS the specific, life-saving treatment for MH by reducing calcium release from the sarcoplasmic reticulum (C is false). MH presents with HYPERthermia, not hypothermia (D is false) — the name itself gives this away. MH has a clear genetic basis (typically autosomal dominant, RYR1-linked), so E is false.<br><br>💡 <b>Tip:</b> MH triad to remember: volatile agents/suxamethonium as triggers, rising ETCO2 as the earliest sign, dantrolene as the specific antidote.",
+tip:""},
+
+{t:"Pharmacology",
+q:"Which of the following anticholinergic agents is most commonly used as a premedication or intraoperative agent specifically to reduce oral/airway secretions while causing less central nervous system sedation than atropine (since it does not readily cross the blood-brain barrier)?",
+o:["Glycopyrrolate","Morphine","Diazepam","Suxamethonium","Neostigmine"],
+a:0,
+e:"<b>Correct: A.</b> Glycopyrrolate is a quaternary ammonium anticholinergic that does not cross the blood-brain barrier, so it reduces salivary and airway secretions and prevents bradycardia (e.g. when combined with neostigmine) without causing the central sedative or confusional effects that atropine (a tertiary amine that does cross the blood-brain barrier) can produce, particularly in the elderly.<br><br><b>Why the others are wrong:</b> Morphine (B) is an opioid analgesic, not an anticholinergic, and does not reduce secretions. Diazepam (C) is a benzodiazepine anxiolytic/sedative, unrelated to anticholinergic secretion control. Suxamethonium (D) is a depolarising neuromuscular blocker. Neostigmine (E) is an anticholinesterase — it INCREASES, rather than reduces, secretions if given alone (another reason it is paired with glycopyrrolate).<br><br>💡 <b>Tip:</b> Glycopyrrolate vs atropine: both are anticholinergic, but glycopyrrolate stays out of the CNS (quaternary structure) — useful whenever a question asks for 'reduced secretions without sedation'.",
+tip:""},
+
+/* ===================== E. PRE-OPERATIVE ASSESSMENT & PREMEDICATION (9) ===================== */
+{t:"Pre-operative Assessment",
+q:"In the pre-operative assessment of an 84-year-old male scheduled for excision of a mandible tumour, which of the following investigations is considered mandatory as part of a standard work-up?",
+o:["Full blood count/haemogram","Thyroid function tests in all patients regardless of symptoms","Resting echocardiogram in all patients regardless of cardiac history","Liver enzymes in all patients regardless of history","Hepatitis B antibody testing in all patients regardless of exposure risk"],
+a:0,
+e:"<b>Correct: A.</b> A full blood count (haemogram) is a standard, near-universal pre-operative investigation, particularly relevant here given the likely blood loss associated with mandibular tumour excision and the patient's advanced age.<br><br><b>Why the others are wrong:</b> Thyroid function tests (B), resting echocardiogram (C), liver enzymes (D), and hepatitis B antibody testing (E) are all TARGETED investigations, indicated only when there is a specific clinical indication (symptoms of thyroid disease, known/suspected cardiac disease, liver disease risk factors, or infection exposure risk) — they are not mandatory as part of routine, unselected pre-operative screening in an asymptomatic patient purely because of age.<br><br>💡 <b>Tip:</b> Pre-operative investigations should be targeted by history and examination findings, not ordered as a blanket panel — a haemogram is one of the few near-universal baseline tests, especially before procedures with expected blood loss.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"Which of the following drugs is effective in reducing pre-operative anxiety when used as premedication?",
+o:["Paraldehyde as first-line modern premedication","A benzodiazepine such as bromazepam or midazolam","Ibuprofen","Metoclopramide","Glycopyrrolate"],
+a:1,
+e:"<b>Correct: B.</b> Benzodiazepines (e.g. midazolam, bromazepam, diazepam) are the mainstay of anxiolytic premedication, acting on GABA-A receptors to produce sedation, anxiolysis and often useful amnesia before induction.<br><br><b>Why the others are wrong:</b> Paraldehyde (A) is an obsolete sedative agent with an unpleasant odour and administration difficulties, essentially never used in modern practice as first-line premedication. Ibuprofen (C) is a non-steroidal anti-inflammatory analgesic with no anxiolytic effect. Metoclopramide (D) is a prokinetic/antiemetic, useful for reducing gastric volume/PONV risk, but has no anxiolytic action. Glycopyrrolate (E) is an anticholinergic used to reduce secretions, again with no direct effect on anxiety.<br><br>💡 <b>Tip:</b> Match each premedication drug to its SPECIFIC purpose: benzodiazepines for anxiety, anticholinergics for secretions, prokinetics/antiemetics for aspiration/PONV risk — don't conflate them.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"During pre-operative assessment for dental/maxillofacial surgery in a woman of child-bearing age, which of the following is of relatively LESS importance to specifically elicit, compared with the other options listed?",
+o:["History of previous general anaesthesia and any anaesthetic complications","History of smoking","History of use of non-steroidal anti-inflammatory drugs","Assessment of mouth opening","Possibility of pregnancy and last menstrual period"],
+a:1,
+e:"<b>Correct: B — history of smoking is relatively LESS specifically critical in this particular framing</b> compared to the other listed items, each of which has a direct, procedure-specific safety implication: previous anaesthetic history (A) predicts difficult airway/complications, NSAID use (C) affects bleeding risk for extractions and interacts with analgesic planning, mouth opening (D) directly determines airway/intubation difficulty for maxillofacial surgery, and pregnancy status (E) is a critical safety consideration determining drug choice and imaging/positioning precautions in a woman of child-bearing age.<br><br><b>Why smoking still matters, but comparatively less here:</b> Smoking history is still clinically relevant (respiratory risk, wound healing) but among this specific list, for a woman of child-bearing age having maxillofacial surgery, the other four options carry more immediate and specific procedural safety weight — this comparison is the basis of the question.<br><br>💡 <b>Tip:</b> These 'least important relative to the others' questions test whether you can prioritise the MOST clinically decision-changing information for a given specific scenario, not whether a factor is irrelevant in general.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"The role of pre-operative premedication is to facilitate all of the following EXCEPT:",
+o:["Reduced anxiety","Reduced coughing/airway reactivity at the time of induction","Minimising oral secretions in a select group of patients","Providing analgesia","Prevention of post-operative nausea and vomiting as a primary, guaranteed effect of standard premedication"],
+a:4,
+e:"<b>Correct: E.</b> Standard premedication (anxiolytics, anticholinergics, analgesics) is not given specifically or reliably to PREVENT PONV — PONV prophylaxis is a distinct clinical goal, typically addressed with specific antiemetics (e.g. ondansetron, dexamethasone) chosen based on individual PONV risk, not achieved as a guaranteed side effect of routine premedication.<br><br><b>Why the others are correct roles of premedication:</b> Reduced anxiety (A) is the classic role of anxiolytic premedication. Reduced airway reactivity/coughing at induction (B) can be achieved with certain agents. Minimising secretions in select patients (C) is the specific role of anticholinergic premedication. Providing pre-emptive analgesia (D) is a recognised additional benefit in some premedication regimens.<br><br>💡 <b>Tip:</b> Don't confuse the general goals of premedication (anxiolysis, secretion control, analgesia) with the SPECIFIC, targeted intervention of antiemetic prophylaxis — these are related but distinct concepts.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"Standard adult fasting guidelines prior to elective general anaesthesia typically recommend which minimum fasting period for clear fluids?",
+o:["No fasting required for clear fluids at all","2 hours","8 hours","24 hours","No oral intake of any kind for 24 hours before surgery"],
+a:1,
+e:"<b>Correct: B.</b> Most modern fasting guidelines recommend a minimum of 2 hours' fast for clear fluids (water, black tea/coffee without milk, pulp-free juice), reflecting evidence that clear fluids empty rapidly from the stomach and that prolonged fasting does not improve safety and may worsen patient comfort/dehydration.<br><br><b>Why the others are wrong:</b> 'No fasting at all for clear fluids' (A) is incorrect — some minimum interval is still recommended. 8 hours (C) is closer to the recommended fasting time for a heavy/fatty meal, not clear fluids. 24 hours (D, E) is excessive and not supported by current evidence-based fasting guidelines for either fluids or solids in routine elective cases.<br><br>💡 <b>Tip:</b> The commonly cited '2-4-6' rule: 2 hours for clear fluids, 4 hours for breast milk, 6 hours for a light meal/infant formula/other milk.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"According to the ASA physical status classification system, a patient with well-controlled hypertension and well-controlled type 2 diabetes, with no functional limitation, is best classified as:",
+o:["ASA I","ASA II","ASA III","ASA IV","ASA V"],
+a:1,
+e:"<b>Correct: B.</b> ASA II describes a patient with mild systemic disease without substantive functional limitation — well-controlled hypertension and well-controlled diabetes, without end-organ complications, fit this category precisely.<br><br><b>Why the others are wrong:</b> ASA I (A) describes a completely healthy patient with no systemic disease. ASA III (C) describes severe systemic disease with functional limitation (e.g. poorly controlled diabetes with end-organ damage, or uncontrolled hypertension). ASA IV (D) describes severe systemic disease that is a constant threat to life. ASA V (E) describes a moribund patient not expected to survive without the operation.<br><br>💡 <b>Tip:</b> ASA classification key words: I = healthy, II = mild controlled disease, III = severe disease with limitation, IV = constant threat to life, V = moribund, VI = declared brain-dead organ donor.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"Which peri-operative cardiovascular risk factor is correctly matched to its category?",
+o:["Peripheral arterial disease — a recognised marker of significant peri-operative cardiovascular risk",
+   "Diabetes insipidus — a major peri-operative cardiovascular risk factor",
+   "Generalised anxiety disorder — a major peri-operative cardiovascular risk factor",
+   "Sickle cell trait (asymptomatic carrier) — equivalent cardiovascular risk to sickle cell disease",
+   "Dehydration-related hypotension — always indicates underlying coronary artery disease"],
+a:0,
+e:"<b>Correct: A.</b> Peripheral arterial disease is a recognised marker of systemic atherosclerosis and is associated with increased peri-operative cardiovascular risk, often prompting further cardiac risk assessment before major surgery.<br><br><b>Why the others are wrong:</b> Diabetes insipidus (B) is a disorder of water balance (ADH deficiency/resistance) and is not a recognised cardiovascular risk factor in the way diabetes MELLITUS is. Generalised anxiety disorder (C) is a psychiatric condition, not a recognised cardiovascular risk marker, although acute anxiety can transiently raise heart rate/blood pressure. Sickle cell TRAIT is generally asymptomatic and carries far lower peri-operative risk than sickle cell DISEASE, so equating the two (D) is incorrect. Dehydration-related hypotension (E) reflects volume status, not necessarily underlying coronary disease — the absolute statement is incorrect.<br><br>💡 <b>Tip:</b> Peripheral arterial disease is a well-known 'silent' marker prompting cardiac risk-stratification before non-cardiac surgery — this pairing is commonly tested.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"During airway assessment, a Mallampati class IV view (soft palate not visible) most strongly predicts:",
+o:["A definitely easy, uncomplicated laryngoscopy and intubation",
+   "An increased likelihood of difficult laryngoscopy/intubation, warranting further airway assessment and planning",
+   "No relevance to airway management whatsoever",
+   "That the patient must be excluded from all forms of anaesthesia",
+   "That regional anaesthesia is now contraindicated"],
+a:1,
+e:"<b>Correct: B.</b> A Mallampati class IV view is associated with a higher likelihood of difficult laryngoscopy and intubation and should prompt further assessment (thyromental distance, mouth opening, neck mobility) and planning for a potentially difficult airway, including appropriate equipment and personnel.<br><br><b>Why the others are wrong:</b> It does not predict an easy intubation (A) — quite the opposite. It is not irrelevant (C); airway scoring systems exist precisely because they carry predictive value, even though no single test is perfectly sensitive or specific alone. A difficult Mallampati score does not mean the patient must be excluded from ALL anaesthesia (D) — it means airway management needs careful planning, which may still include general anaesthesia with appropriate precautions. It has no direct bearing on the suitability of regional anaesthesia (E), which does not require laryngoscopy at all.<br><br>💡 <b>Tip:</b> Mallampati score is ONE predictor among several (thyromental distance, mouth opening, neck extension, history of previous difficult intubation) — always combine multiple predictors rather than relying on one score alone.",
+tip:""},
+
+{t:"Pre-operative Assessment",
+q:"A patient on long-term warfarin therapy is scheduled for elective maxillofacial surgery with expected significant blood loss. Which pre-operative step is most appropriate?",
+o:["Continue warfarin unchanged with no monitoring, as it has no relevance to surgical bleeding risk",
+   "Check the INR pre-operatively and plan appropriate interruption/bridging of anticoagulation in consultation with the prescribing team, according to bleeding risk",
+   "Stop warfarin the morning of surgery only, with no other planning",
+   "Double the warfarin dose pre-operatively to 'get ahead' of the surgery",
+   "Assume the INR will always be therapeutic without checking it"],
+a:1,
+e:"<b>Correct: B.</b> Anticoagulated patients undergoing surgery with significant expected blood loss require a checked, documented pre-operative INR and a planned strategy (often in conjunction with the prescribing physician/haematology) for interrupting or bridging anticoagulation appropriately, balancing bleeding risk against thromboembolic risk.<br><br><b>Why the others are wrong:</b> Continuing warfarin unchanged with no monitoring (A) ignores a major bleeding risk. Stopping only on the morning of surgery (C) is far too late — warfarin has a long half-life and INR normalisation typically requires several days of cessation (often with bridging anticoagulation depending on indication). Doubling the dose (D) is dangerous and illogical. Assuming a therapeutic INR without checking (E) is unsafe practice.<br><br>💡 <b>Tip:</b> Anticoagulant management before surgery always requires an individualised risk-benefit plan (bleeding risk vs thrombosis risk) — never a one-size-fits-all approach.",
+tip:""},
+
+/* ===================== F. MONITORING (5) ===================== */
+{t:"Monitoring",
+q:"A standard resting 12-lead or continuous 3/5-lead electrocardiogram (ECG) during anaesthesia primarily provides information on:",
+o:["Heart contractility directly","Heart rhythm and heart rate","Heart valve function directly","Cardiac output directly","Coronary blood flow directly, in absolute terms"],
+a:1,
+e:"<b>Correct: B.</b> The ECG is an electrical monitor — it records the timing and pattern of cardiac electrical activity, providing direct information on heart rate and rhythm (and indirect inference of ischaemia via ST-segment changes), but it does NOT directly measure mechanical function.<br><br><b>Why the others are wrong:</b> Contractility (A) is a mechanical property best assessed by echocardiography or invasive measures, not by the electrical signal alone. Valve function (C) requires echocardiography (structural/flow imaging), not ECG. Cardiac output (D) is a mechanical/flow parameter requiring specific cardiac output monitoring technology, not ECG. Coronary blood flow in absolute terms (E) is not measured by ECG — ECG can suggest ischaemia (ST changes) but does not quantify flow.<br><br>💡 <b>Tip:</b> ECG = electrical activity (rate/rhythm/ischaemia suggestion) — it is a common trap to assume ECG tells you about mechanical pump function, which it does not do directly.",
+tip:""},
+
+{t:"Monitoring",
+q:"Which statement about pulse oximetry is TRUE?",
+o:["It directly measures partial pressure of arterial oxygen (PaO2)",
+   "It estimates arterial oxygen saturation and can be inaccurate in the presence of severe peripheral vasoconstriction, carbon monoxide poisoning, or significant motion artefact",
+   "It reliably detects hypoventilation before desaturation occurs, in every patient breathing supplemental oxygen",
+   "It is unaffected by nail polish or skin pigmentation",
+   "It measures carbon dioxide levels directly"],
+a:1,
+e:"<b>Correct: B.</b> Pulse oximetry estimates arterial oxygen saturation (SpO2) based on differential light absorption, but has recognised limitations: poor peripheral perfusion/vasoconstriction, carbon monoxide poisoning (falsely reads high SpO2 because carboxyhaemoglobin is misread as oxyhaemoglobin), and motion artefact can all cause inaccurate readings.<br><br><b>Why the others are wrong:</b> It does not directly measure PaO2 (A) — it estimates saturation, which relates to PaO2 via the oxygen-haemoglobin dissociation curve, but is not the same measurement. It notably does NOT reliably detect hypoventilation early, particularly in a patient on supplemental oxygen (C), because saturation can remain normal for some time despite rising CO2 and inadequate ventilation — this is a key patient-safety teaching point, making capnography a better monitor of ventilation. It CAN be affected by nail polish (particularly dark colours) and, to some extent, skin pigmentation (D is false). It does not measure CO2 (E) — that is the role of capnography.<br><br>💡 <b>Tip:</b> 'Pulse oximetry does not reliably detect hypoventilation, especially with supplemental oxygen running' is one of the most important and frequently tested patient-safety facts in anaesthesia monitoring.",
+tip:""},
+
+{t:"Monitoring",
+q:"Continuous capnography (end-tidal CO2 monitoring) during general anaesthesia is primarily used to:",
+o:["Measure blood pressure trends","Confirm correct tracheal tube placement and monitor adequacy of ventilation breath-by-breath","Directly measure oxygen saturation","Replace the need for pulse oximetry entirely","Assess renal function"],
+a:1,
+e:"<b>Correct: B.</b> Capnography provides a breath-by-breath waveform of exhaled CO2, confirming correct tracheal placement (a persistent, characteristic waveform confirms tracheal rather than oesophageal placement) and continuously monitoring the adequacy of ventilation, making it a mandatory standard of care during general anaesthesia.<br><br><b>Why the others are wrong:</b> It has no role in blood pressure trending (A). It does not measure oxygen saturation (C) — that is pulse oximetry's role. It complements, but does not replace (D), pulse oximetry, since the two monitors assess different physiological parameters (ventilation vs oxygenation) and can each detect problems the other misses. It has no role in assessing renal function (E).<br><br>💡 <b>Tip:</b> Capnography = confirms tube placement + monitors ventilation adequacy in real time; it is now considered mandatory, not optional, during general anaesthesia with an artificial airway.",
+tip:""},
+
+{t:"Monitoring",
+q:"In a spontaneously breathing patient at an ideal surgical plane of anaesthesia, which combination of signs would you expect to see?",
+o:["No purposeful movement in response to surgical stimulation, with a regular, rhythmic respiratory pattern",
+   "Dilated, unreactive pupils as the defining sign of adequate surgical anaesthesia",
+   "Profuse lacrimation (tearing) as the defining sign of adequate surgical anaesthesia",
+   "Rapid, irregular gasping respirations",
+   "Active limb movement in direct response to the surgical incision"],
+a:0,
+e:"<b>Correct: A.</b> At an adequate surgical plane, the patient should show no purposeful movement in response to surgical stimulation and maintain a regular, rhythmic respiratory pattern (in the spontaneously breathing patient) — these are the classic clinical signs of adequate anaesthetic depth traditionally taught using signs of eye, respiratory, and cardiovascular activity.<br><br><b>Why the others are wrong:</b> Dilated, unreactive pupils (B) and profuse lacrimation (C) are more typically associated with LIGHT anaesthesia or an inadequate depth/analgesia (autonomic response to stimulation), not with an ideal surgical plane. Rapid, irregular gasping (D) suggests either light anaesthesia, airway obstruction, or another problem, not a stable surgical plane. Active limb movement to incision (E) indicates inadequate depth of anaesthesia — movement is precisely what an adequate surgical plane should prevent.<br><br>💡 <b>Tip:</b> The traditional clinical signs of anaesthetic depth (pupil size/reactivity, lacrimation, respiratory pattern, movement) remain useful bedside clues, especially where processed EEG monitors are unavailable.",
+tip:""},
+
+{t:"Monitoring",
+q:"Which of the following is an appropriate site for continuous core temperature monitoring during a prolonged general anaesthetic?",
+o:["Axilla only, as it always accurately reflects core temperature","Nasopharyngeal or oesophageal probe","Palm of the hand","Outer ear pinna (not the tympanic membrane)","Any exposed skin surface"],
+a:1,
+e:"<b>Correct: B.</b> Nasopharyngeal and oesophageal (lower third) probes are recognised, reliable sites for continuous CORE temperature monitoring during anaesthesia, closely reflecting central/core body temperature.<br><br><b>Why the others are wrong:</b> Axillary temperature (A) reflects peripheral, not core, temperature and is significantly influenced by ambient conditions and peripheral perfusion, making it an unreliable choice for accurate intraoperative core monitoring, so 'always accurately reflects core temperature' is false. The palm (C) and general exposed skin (E) are peripheral sites, not validated core monitoring locations. The outer ear pinna (as opposed to a proper tympanic membrane probe) (D) is not a standard/validated core temperature monitoring site.<br><br>💡 <b>Tip:</b> Core temperature sites worth remembering: nasopharyngeal, oesophageal (lower third), tympanic membrane (with correct technique), pulmonary artery (invasive/rarely used) — distinguish these from peripheral (skin/axillary) sites, which lag behind and underestimate changes in core temperature.",
+tip:""},
+
+/* ===================== G. COMPLICATIONS & EMERGENCIES (7) ===================== */
+{t:"Complications & Emergencies",
+q:"Patients at increased risk of aspiration of gastric contents during anaesthesia include all of the following EXCEPT:",
+o:["Patients with acute abdominal obstruction","Pregnant women beyond the first trimester","Morbidly obese patients","Patients with a confirmed, adequate fasting period and no risk factors for delayed gastric emptying","Patients with a hiatus hernia and symptomatic reflux"],
+a:3,
+e:"<b>Correct: D.</b> A patient who has genuinely fasted adequately and has no additional risk factors for delayed gastric emptying is, by definition, at standard (not increased) aspiration risk — this option describes the reassuring, low-risk scenario, not a risk factor.<br><br><b>Why the others increase risk:</b> Acute abdominal obstruction (A) causes delayed gastric emptying and a full stomach regardless of fasting time. Pregnancy beyond the first trimester (B) increases intra-abdominal pressure and reduces lower oesophageal sphincter tone, alongside progesterone-mediated delayed gastric emptying. Morbid obesity (C) is associated with increased intra-abdominal pressure, higher incidence of hiatus hernia/reflux and delayed gastric emptying. Hiatus hernia with symptomatic reflux (E) directly predisposes to regurgitation and aspiration.<br><br>💡 <b>Tip:</b> Aspiration risk factors cluster around: full/obstructed stomach, raised intra-abdominal pressure, incompetent lower oesophageal sphincter, and reduced consciousness/reduced protective reflexes — learn the categories, not just a list.",
+tip:""},
+
+{t:"Complications & Emergencies",
+q:"Disastrous outcomes in anaesthesia have been related to all of the following EXCEPT:",
+o:["Failure to maintain a clear and patent airway","Inadequate invasive monitoring appropriate to the case","Hypovolaemia","Inadequate pre-operative history taking","A hospital's staff social events calendar"],
+a:4,
+e:"<b>Correct: E.</b> A hospital's staff social events calendar has no established relationship with anaesthetic morbidity or mortality — it is an irrelevant distractor.<br><br><b>Why the others are recognised contributing factors:</b> Failure to maintain a clear, patent airway (A) remains one of the leading preventable causes of anaesthetic death. Inadequate monitoring for the complexity of the case (B), unrecognised/untreated hypovolaemia (C), and inadequate pre-operative assessment/history taking (D) are all well-documented, recurring themes in critical incident and mortality audits of anaesthetic disasters.<br><br>💡 <b>Tip:</b> Recurring 'root causes' in anaesthetic mortality audits: airway failure, monitoring failure, drug error, hypovolaemia/haemorrhage, and inadequate pre-operative assessment — a useful checklist to recall for 'disastrous outcomes' style questions.",
+tip:""},
+
+{t:"Complications & Emergencies",
+q:"A patient develops sudden hypotension, tachycardia, bronchospasm, and a widespread urticarial rash shortly after induction of anaesthesia. The most appropriate immediate management is:",
+o:["Continue surgery as planned and reassess only at the end of the case",
+   "Stop the suspected triggering agent, call for help, give high-flow oxygen and intramuscular/intravenous adrenaline, and follow the anaphylaxis algorithm",
+   "Give a beta-blocker immediately as first-line treatment",
+   "Administer an additional dose of the same neuromuscular blocking agent just given",
+   "Discharge the patient home for outpatient follow-up once stable"],
+a:1,
+e:"<b>Correct: B.</b> This presentation is classic for anaphylaxis under anaesthesia; management follows the standard algorithm: remove/stop the likely triggering agent, call for help, secure the airway and give high-flow oxygen, and give adrenaline (IM or titrated IV in a monitored setting) as the first-line, life-saving treatment, alongside fluids for hypotension.<br><br><b>Why the others are wrong:</b> Continuing surgery unchanged (A) ignores a life-threatening emergency. Beta-blockers (C) are not first-line for anaphylaxis and can actually blunt the response to adrenaline, worsening outcomes in beta-blocked patients (requiring glucagon as an alternative in that specific situation) — they are never the first-line treatment themselves. Giving MORE of a potential triggering agent (D) is dangerous and could worsen the reaction if that drug is the culprit. Discharging the patient (E) is entirely inappropriate for an evolving anaphylactic emergency.<br><br>💡 <b>Tip:</b> Anaphylaxis under anaesthesia = adrenaline first, always — the underlying cause (drug, latex, chlorhexidine) is investigated later with mast cell tryptase levels and allergy testing, not during the acute emergency.",
+tip:""},
+
+{t:"Complications & Emergencies",
+q:"Which of the following is the most likely cause of hypokalaemia in a hospitalised surgical patient?",
+o:["Muscle crush injury","Acute renal failure with oliguria","Chronic diuretic (e.g. loop or thiazide) use","Severe rhabdomyolysis","Massive, rapid blood transfusion of stored blood"],
+a:2,
+e:"<b>Correct: C.</b> Chronic use of loop or thiazide diuretics causes ongoing renal potassium wasting and is one of the most common causes of hypokalaemia encountered in surgical/hospitalised patients.<br><br><b>Why the others are wrong:</b> Muscle crush injury (A) and severe rhabdomyolysis (D) release intracellular potassium into the circulation, causing HYPERkalaemia, not hypokalaemia. Acute renal failure with oliguria (B) impairs potassium excretion, again causing HYPERkalaemia. Massive transfusion of stored blood (E) is classically associated with HYPERkalaemia (from potassium leaking out of stored red cells over time), particularly with rapid, large-volume transfusion.<br><br>💡 <b>Tip:</b> Learn to sort each option into 'causes hyperkalaemia' vs 'causes hypokalaemia' — crush injury, rhabdomyolysis, renal failure and massive transfusion are all HYPERkalaemia causes, making diuretics the clear outlier causing hypokalaemia.",
+tip:""},
+
+{t:"Complications & Emergencies",
+q:"In the management of local anaesthetic systemic toxicity (LAST) with cardiovascular collapse, which specific treatment (in addition to standard resuscitation) is recommended?",
+o:["Intravenous lipid emulsion ('intralipid') therapy","Intravenous high-dose bupivacaine to 'flood out' the toxicity","Oral activated charcoal as first-line treatment","Immediate haemodialysis as the first-line intervention","Intramuscular adrenaline only, with no other specific therapy"],
+a:0,
+e:"<b>Correct: A.</b> Intravenous lipid emulsion ('intralipid') is the specific antidote-like treatment for severe local anaesthetic systemic toxicity with cardiovascular collapse, thought to work partly by acting as a 'lipid sink' that sequesters the lipophilic local anaesthetic away from cardiac tissue, alongside standard advanced life support measures (with modified drug dosing, e.g. reduced adrenaline doses, per LAST-specific guidance).<br><br><b>Why the others are wrong:</b> Giving MORE bupivacaine (B) would obviously worsen toxicity — this is the opposite of appropriate treatment. Activated charcoal (C) is used for some oral ingestions, not for a local anaesthetic toxicity event arising from parenteral (injected) administration. Haemodialysis (D) is not a first-line or standard treatment for LAST. Adrenaline alone with no other specific therapy (E) omits the crucial lipid emulsion step that is now standard of care in resuscitation guidelines for LAST-related cardiac arrest.<br><br>💡 <b>Tip:</b> LAST + cardiovascular collapse = give lipid emulsion early, alongside modified ALS (smaller, more frequent adrenaline doses are recommended rather than standard boluses) — every anaesthetic location using local anaesthetics should have lipid emulsion immediately available.",
+tip:""},
+
+{t:"Complications & Emergencies",
+q:"During airway management, an unanticipated 'cannot intubate, cannot oxygenate' (CICO) situation arises despite optimal attempts. The most appropriate next step is:",
+o:["Repeat the same failed laryngoscopy technique multiple additional times with no change in approach",
+   "Proceed promptly to an emergency front-of-neck airway (surgical or cannula cricothyroidotomy) according to a recognised difficult airway algorithm",
+   "Wait and observe, since spontaneous resolution is expected in nearly all cases",
+   "Give a large additional dose of a long-acting neuromuscular blocking agent to 'help' visualisation",
+   "Abandon airway management entirely with no further intervention"],
+a:1,
+e:"<b>Correct: B.</b> A genuine CICO situation is immediately life-threatening; recognised difficult airway algorithms (e.g. DAS/ASA guidelines) mandate prompt progression to an emergency front-of-neck airway (cricothyroidotomy) once oxygenation cannot be achieved by any other means, rather than persisting indefinitely with failing techniques.<br><br><b>Why the others are wrong:</b> Repeating the same failed technique (A) wastes critical time in a hypoxic emergency and is explicitly discouraged by difficult airway algorithms, which emphasise limiting the number of attempts before escalating. Waiting passively (C) is dangerous and inappropriate — CICO does not resolve spontaneously and rapidly leads to hypoxic brain injury or death if untreated. Giving MORE long-acting neuromuscular blocker (D) does not solve an oxygenation failure and removes any possibility of the patient recovering spontaneous ventilation, worsening the emergency. Abandoning airway management entirely (E) guarantees a fatal outcome.<br><br>💡 <b>Tip:</b> CICO is one of the true anaesthetic emergencies with a clear, drilled algorithm — 'plan A, B, C, D' culminating in front-of-neck access — know that escalation must happen promptly, not as a last resort after prolonged struggling.",
+tip:""}
+
+];
+
+/* ============================= APPLICATION LOGIC ============================= */
+QUESTIONS.forEach((q,i)=>{q.id=i;});
+const LETTERS=["A","B","C","D","E"];
+const el=id=>document.getElementById(id);
+
+const state={
+  paper:[],            // array of question ids in current paper, in play order
+  pos:0,
+  answers:{},           // id -> {sel, status}  status: correct|incorrect|timeout
+  flagged:new Set(),
+  filter:"All",
+  order:[],             // currently displayed order (subset/filter of paper)
+  mode:"practice",       // practice | exam
+  immediateFeedback:true,
+  timerOn:false,
+  dark:false,
+  examSubmitted:false,
+  timerId:null,
+  timeLeft:45,
+  paused:false
+};
+const CIRC=2*Math.PI*21;
+
+function topicCounts(ids){
+  const c={};
+  ids.forEach(id=>{const t=QUESTIONS[id].t;c[t]=(c[t]||0)+1;});
+  return c;
+}
+
+function stratifiedSample(size){
+  // group by topic, sample proportionally to each topic's share of the full bank
+  const byTopic={};
+  TOPICS.forEach(t=>byTopic[t]=QUESTIONS.filter(q=>q.t===t).map(q=>q.id));
+  let picked=[];
+  const total=QUESTIONS.length;
+  TOPICS.forEach(t=>{
+    const share=byTopic[t].length/total;
+    let n=Math.round(share*size);
+    n=Math.min(n, byTopic[t].length);
+    const pool=[...byTopic[t]];
+    for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    picked=picked.concat(pool.slice(0,n));
+  });
+  // top up / trim to exact size
+  if(picked.length<size){
+    const remaining=QUESTIONS.map(q=>q.id).filter(id=>!picked.includes(id));
+    for(let i=remaining.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[remaining[i],remaining[j]]=[remaining[j],remaining[i]];}
+    picked=picked.concat(remaining.slice(0,size-picked.length));
+  }
+  picked=picked.slice(0,size);
+  for(let i=picked.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[picked[i],picked[j]]=[picked[j],picked[i]];}
+  return picked;
+}
+
+function generatePaper(size){
+  stopTimer();
+  state.paper=stratifiedSample(size);
+  state.answers={};
+  state.flagged=new Set();
+  state.filter="All";
+  state.order=[...state.paper];
+  state.pos=0;
+  state.mode=state.mode; // preserve
+  state.examSubmitted=false;
+  buildTabs();
+  showQuiz();
+  render();
+  updateStats();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function buildTabs(){
+  const present=[...new Set(state.paper.map(id=>QUESTIONS[id].t))];
+  const labels=["All",...TOPICS.filter(t=>present.includes(t))];
+  el("tabs").innerHTML="";
+  labels.forEach(l=>{
+    const b=document.createElement("button");
+    b.className="tab"+(l===state.filter?" active":"");
+    b.textContent=l==="All"?"All":l;
+    b.onclick=()=>applyFilter(l);
+    el("tabs").appendChild(b);
+  });
+}
+function applyFilter(label){
+  state.filter=label;
+  state.order=label==="All"?[...state.paper]:state.paper.filter(id=>QUESTIONS[id].t===label);
+  state.pos=0; buildTabs(); showQuiz(); render();
+}
+function applyFlaggedOnly(){
+  const f=state.paper.filter(id=>state.flagged.has(id));
+  if(f.length===0){alert("No questions flagged for review yet. Tap the ☆ on a question to flag it.");return;}
+  state.filter="Flagged"; state.order=f; state.pos=0; buildTabs(); showQuiz(); render();
+}
+
+function stopTimer(){if(state.timerId){clearInterval(state.timerId);state.timerId=null;}}
+function startTimer(){
+  stopTimer();
+  if(!state.timerOn){el("timer").style.display="none";return;}
+  el("timer").style.display="block";
+  const q=currentQ();
+  if(!q||isRevealed(q.id)){drawTimer(45,true);return;}
+  state.timeLeft=45;state.paused=false;
+  drawTimer(state.timeLeft,false);
+  state.timerId=setInterval(()=>{
+    if(state.paused)return;
+    state.timeLeft--;
+    drawTimer(state.timeLeft,false);
+    if(state.timeLeft<=0){stopTimer();timeoutQuestion();}
+  },1000);
+}
+function drawTimer(t,idle){
+  const bar=el("timerBar"),wrap=el("timer");
+  bar.setAttribute("stroke-dasharray",CIRC);
+  bar.setAttribute("stroke-dashoffset",CIRC*(1-(idle?1:t/45)));
+  el("timerNum").textContent=idle?"45":Math.max(0,t);
+  wrap.classList.toggle("low",!idle&&t<=10);
+}
+function timeoutQuestion(){
+  const q=currentQ();if(!q)return;
+  if(state.mode==="practice"&&!state.answers[q.id]){state.answers[q.id]={sel:null,status:"timeout"};}
+  render();updateStats();
+}
+function currentQ(){const id=state.order[state.pos];return id==null?null:QUESTIONS[id];}
+function isRevealed(id){
+  if(state.mode==="exam")return state.examSubmitted;
+  if(!state.immediateFeedback)return false;
+  return !!state.answers[id];
+}
+function weakIds(){
+  return state.paper.filter(id=>{const a=state.answers[id];return !a||a.status!=="correct";});
+}
+function choose(idx){
+  const q=currentQ();if(!q)return;
+  if(state.mode==="exam"&&state.examSubmitted)return;
+  if(state.mode==="practice"&&state.immediateFeedback&&state.answers[q.id])return;
+  stopTimer();
+  state.answers[q.id]={sel:idx,status:idx===q.a?"correct":"incorrect"};
+  render();updateStats();
+}
+function toggleFlag(){
+  const q=currentQ();if(!q)return;
+  if(state.flagged.has(q.id))state.flagged.delete(q.id);else state.flagged.add(q.id);
+  render();updateStats();
+}
+function render(){
+  const q=currentQ();const total=state.order.length;
+  const emptyEl=document.querySelector(".empty");if(emptyEl)emptyEl.remove();
+  if(!q){
+    el("opts").innerHTML="";el("qtext").textContent="";el("qnum").textContent="";el("sectLabel").textContent="—";
+    el("card").style.display="none";
+    const d=document.createElement("div");d.className="empty";d.textContent="No questions in this view.";el("card").after(d);
+    el("qcount").textContent="Q 0 / 0";el("progbar").style.width="0%";drawTimer(45,true);
+    el("nav").style.display="none";
+    return;
+  }
+  el("nav").style.display="flex";
+  el("card").style.display="block";
+  el("sectLabel").textContent=q.t;
+  el("qnum").textContent="QUESTION "+(state.pos+1)+" OF "+total;
+  el("qtext").textContent=q.q;
+  el("qcount").textContent="Q "+(state.pos+1)+" / "+total;
+  el("progbar").style.width=(((state.pos+1)/total)*100)+"%";
+  el("flagBtn").textContent=state.flagged.has(q.id)?"★":"☆";
+  el("flagBtn").classList.toggle("flagged",state.flagged.has(q.id));
+
+  const rec=state.answers[q.id];
+  const revealed=isRevealed(q.id);
+  const answeredButHidden=!!rec&&!revealed;
+
+  const opts=el("opts");opts.innerHTML="";
+  q.o.forEach((txt,i)=>{
+    const card=document.createElement("div");
+    let cls="opt";
+    if(revealed){
+      cls+=" locked";
+      if(i===q.a)cls+=" correct";
+      else if(rec&&rec.sel===i)cls+=" wrong";
+      else cls+=" faded";
+    } else if(answeredButHidden&&rec.sel===i){
+      cls+=" selected locked";
+    } else if(state.mode==="exam"&&rec&&rec.sel===i){
+      cls+=" selected";
+    }
+    card.className=cls;
+    card.innerHTML='<span class="lett">'+LETTERS[i]+'</span><span>'+txt+'</span>';
+    card.onclick=()=>choose(i);
+    opts.appendChild(card);
+  });
+
+  const exp=el("explain");
+  const note=el("examnote");
+  if(revealed){
+    let head;
+    if(!rec)head="<b>Not answered.</b> Correct answer "+LETTERS[q.a]+". ";
+    else if(rec.status==="correct")head="<b>Correct.</b> ";
+    else if(rec.status==="timeout")head="<b>Time expired.</b> Correct answer "+LETTERS[q.a]+". ";
+    else head="<b>Not quite.</b> Correct answer "+LETTERS[q.a]+". ";
+    exp.innerHTML=head+q.e;exp.classList.add("show");
+    note.style.display="none";
+  } else {
+    exp.classList.remove("show");exp.innerHTML="";
+    note.style.display=(state.mode==="exam")?"block":"none";
+  }
+  el("prevBtn").disabled=state.pos===0;
+  const canAdvance=state.mode==="exam"?true:(revealed||!state.immediateFeedback);
+  el("nextBtn").disabled=!canAdvance||state.pos>=total-1;
+  startTimer();
+}
+function next(){if(state.pos<state.order.length-1){state.pos++;render();window.scrollTo({top:0,behavior:"smooth"});}}
+function prev(){if(state.pos>0){state.pos--;render();window.scrollTo({top:0,behavior:"smooth"});}}
+function updateStats(){
+  let ok=0,bad=0,un=0;
+  state.paper.forEach(id=>{
+    const a=state.answers[id];
+    if(!a)un++;
+    else if(a.status==="correct")ok++;
+    else bad++;
+  });
+  el("sTotal").textContent=state.paper.length;
+  el("sOk").textContent=ok;el("sBad").textContent=bad;el("sUn").textContent=un;
+  el("sFlag").textContent=state.flagged.size;
+}
+
+function submitOrResults(){
+  if(state.mode==="exam"&&!state.examSubmitted){
+    const unanswered=state.paper.filter(id=>!state.answers[id]).length;
+    const msg=unanswered>0?("You have "+unanswered+" unanswered question(s). Submit the paper now and see results?"):"Submit the paper and see your results?";
+    if(!confirm(msg))return;
+    state.examSubmitted=true;
+  }
+  showResults();
+}
+
+function showResults(){
+  stopTimer();
+  el("quizView").style.display="none";
+  el("results").classList.add("show");
+  let ok=0;
+  state.paper.forEach(id=>{if(state.answers[id]&&state.answers[id].status==="correct")ok++;});
+  const tot=state.paper.length,pct=tot?Math.round(ok/tot*100):0;
+  el("rPct").textContent=pct+"%";
+  el("rFrac").textContent=ok+" / "+tot;
+  el("rSub").textContent=Object.keys(state.answers).length+" of "+tot+" attempted";
+
+  const box=el("rBreak");box.innerHTML="";
+  const present=[...new Set(state.paper.map(id=>QUESTIONS[id].t))];
+  present.forEach(t=>{
+    const inSec=state.paper.filter(id=>QUESTIONS[id].t===t);
+    const c=inSec.filter(id=>state.answers[id]&&state.answers[id].status==="correct").length;
+    const p=inSec.length?Math.round(c/inSec.length*100):0;
+    const row=document.createElement("div");row.className="brow";
+    row.innerHTML='<div><div class="nm">'+t+'</div><div class="bmini"><i style="width:'+p+'%"></i></div></div><div class="vl">'+c+' / '+inSec.length+'</div>';
+    box.appendChild(row);
+  });
+
+  const rbox=el("rIncorrect");rbox.innerHTML="";
+  const problems=state.paper.filter(id=>{const a=state.answers[id];return !a||a.status!=="correct";});
+  if(problems.length===0){
+    rbox.innerHTML='<div class="empty" style="padding:24px 10px;">🎉 No incorrect or unanswered questions — full marks!</div>';
+  } else {
+    problems.forEach(id=>{
+      const q=QUESTIONS[id];const a=state.answers[id];
+      const rc=document.createElement("div");
+      rc.className="rcard wrong";
+      const status=!a?"Unanswered":(a.status==="timeout"?"Time expired":"Incorrect");
+      rc.innerHTML='<div class="rc-top"><span>'+q.t+'</span><span>'+status+'</span></div><div class="rc-q">'+q.q+'</div>';
+      rc.onclick=()=>{
+        state.filter="All";state.order=[...state.paper];
+        state.pos=state.order.indexOf(id);
+        buildTabs();showQuiz();render();
+        window.scrollTo({top:0,behavior:"smooth"});
+      };
+      rbox.appendChild(rc);
+    });
+  }
+}
+function showQuiz(){el("results").classList.remove("show");el("quizView").style.display="block";}
+
+function retryWeak(){
+  const w=weakIds();
+  if(w.length===0){alert("No incorrect or unanswered questions to retry — great work!");return;}
+  state.filter="Weak Review";
+  // reset answers only for the weak subset so they can be re-attempted
+  w.forEach(id=>{delete state.answers[id];});
+  state.order=w;state.pos=0;
+  if(state.mode==="exam")state.examSubmitted=false;
+  buildTabs();showQuiz();render();updateStats();
+}
+
+function resetAll(){
+  if(!confirm("Reset all answers and flags for the current paper?"))return;
+  state.answers={};state.flagged=new Set();state.filter="All";state.order=[...state.paper];state.pos=0;
+  state.examSubmitted=false;
+  buildTabs();showQuiz();render();updateStats();
+}
+
+/* ---------- Jump modal ---------- */
+function buildJumpGrid(){
+  const grid=el("jumpGrid");grid.innerHTML="";
+  state.paper.forEach((id,idx)=>{
+    const b=document.createElement("button");
+    const a=state.answers[id];
+    let cls="jbtn";
+    if(state.pos<state.order.length&&state.order[state.pos]===id)cls+=" current";
+    if(a){
+      if(isRevealed(id)){cls+=a.status==="correct"?" answered-ok":" answered-bad";}
+      else{cls+=" answered-sel";}
+    }
+    b.className=cls;
+    b.textContent=idx+1;
+    if(state.flagged.has(id)){const dot=document.createElement("span");dot.className="fdot";b.appendChild(dot);}
+    b.onclick=()=>{
+      state.filter="All";state.order=[...state.paper];state.pos=idx;
+      buildTabs();showQuiz();render();
+      el("jumpModal").classList.remove("show");
+      window.scrollTo({top:0,behavior:"smooth"});
+    };
+    grid.appendChild(b);
+  });
+}
+
+/* ---------- Settings ---------- */
+function applyTheme(){document.body.dataset.theme=state.dark?"dark":"light";}
+function refreshSwitches(){
+  el("examModeSwitch").classList.toggle("on",state.mode==="exam");
+  el("feedbackSwitch").classList.toggle("on",state.immediateFeedback);
+  el("timerSwitch").classList.toggle("on",state.timerOn);
+  el("darkSwitch").classList.toggle("on",state.dark);
+}
+
+el("examModeSwitch").onclick=()=>{
+  state.mode=state.mode==="exam"?"practice":"exam";
+  state.examSubmitted=false;
+  refreshSwitches();render();
+};
+el("feedbackSwitch").onclick=()=>{state.immediateFeedback=!state.immediateFeedback;refreshSwitches();render();};
+el("timerSwitch").onclick=()=>{state.timerOn=!state.timerOn;refreshSwitches();render();};
+el("darkSwitch").onclick=()=>{state.dark=!state.dark;applyTheme();refreshSwitches();};
+el("paperSizeSel").onchange=()=>{};
+
+el("jumpBtn").onclick=()=>{buildJumpGrid();el("jumpModal").classList.add("show");};
+el("jumpCloseBtn").onclick=()=>el("jumpModal").classList.remove("show");
+el("settingsBtn").onclick=()=>{refreshSwitches();el("settingsModal").classList.add("show");};
+el("settingsCloseBtn").onclick=()=>el("settingsModal").classList.remove("show");
+[el("jumpModal"),el("settingsModal")].forEach(m=>{
+  m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("show");});
+});
+
+el("flagOnlyBtn").onclick=applyFlaggedOnly;
+el("resultsBtn").onclick=submitOrResults;
+el("newPaperBtn").onclick=el("newPaperBtn2").onclick=()=>{
+  const size=parseInt(el("paperSizeSel").value,10);
+  generatePaper(size);
+};
+el("rRetryWeak").onclick=()=>{showQuiz();retryWeak();};
+el("rReview").onclick=()=>{showQuiz();render();};
+el("rReset").onclick=resetAll;
+el("flagBtn").onclick=toggleFlag;
+el("nextBtn").onclick=next;el("prevBtn").onclick=prev;
+
+document.addEventListener("keydown",e=>{
+  if(el("results").classList.contains("show"))return;
+  if(el("jumpModal").classList.contains("show")||el("settingsModal").classList.contains("show"))return;
+  const k=e.key.toLowerCase();
+  if(["a","b","c","d","e"].includes(k)){const idx=k.charCodeAt(0)-97;const q=currentQ();if(q&&idx<q.o.length)choose(idx);}
+  else if(e.key==="ArrowRight"){if(!el("nextBtn").disabled)next();}
+  else if(e.key==="ArrowLeft"){if(!el("prevBtn").disabled)prev();}
+  else if(k==="f")toggleFlag();
+  else if(k==="j"){buildJumpGrid();el("jumpModal").classList.add("show");}
+});
+
+/* ---------- Init ---------- */
+generatePaper(30);
+refreshSwitches();
+applyTheme();
+</script>
+</body>
+</html>
